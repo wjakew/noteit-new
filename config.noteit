@@ -1,0 +1,7 @@
+noteit configuration file!
+by Jakub Wawak
+#database_name%noteit_database
+#database_user%admin
+#database_password%password
+#database_ip%localhost
+#debugflag%1
