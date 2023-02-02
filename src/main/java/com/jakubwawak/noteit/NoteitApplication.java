@@ -9,6 +9,7 @@ import com.jakubwawak.database.Database_Connector;
 import com.jakubwawak.maintanance.Configuration;
 import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.maintanance.NoteIT_Logger;
+import com.jakubwawak.maintanance.NoteIT_User;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,10 +23,12 @@ public class NoteitApplication {
 
 	public static int debug = 1;
 	public static int test = 0;
+
 	public static NoteIT_Logger log;
 	public static Database_Connector database;
 
 	public static String user_2fa_code;
+	public static NoteIT_User logged;
 
 	/**
 	 * Main application function
@@ -34,6 +37,7 @@ public class NoteitApplication {
 	public static void main(String[] args) {
 		show_header();
 		user_2fa_code = "";
+		logged = null;
 		// looking for configuration file
 		Configuration config = new Configuration();
 		log = new NoteIT_Logger();

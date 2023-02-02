@@ -42,9 +42,14 @@ public class MailConnector {
             mailMessage.setText(message.msgBody);
             mailMessage.setSubject(message.subject);
 
-            // Sending the mail
-            javaMailSender.send(mailMessage);
-            NoteitApplication.log.add("MAILSEND","Sent new mail ("+message.recipient+")");
+            if ( NoteitApplication.database.check_sendmail_flag() == 1 ){
+                // Sending the mail
+                javaMailSender.send(mailMessage);
+                NoteitApplication.log.add("MAILSEND","Sent new mail ("+message.recipient+")");
+            }
+            else{
+                NoteitApplication.log.add("MAILSENDSTOP","Data to ("+message.recipient+") : "+message.msgBody);
+            }
             return 1;
         }
 

@@ -159,9 +159,17 @@ public class Database_Connector {
                 int nami_user_id = rs.getInt("noteit_user_id");
 
                 // set user account as active
+                Database_NoteITUser dni = new Database_NoteITUser(this);
+                dni.setuseractive(nami_user_id);
 
                 // remove code from database
 
+                query = "DELETE FROM NOTEIT_ACCCONFIRM WHERE noteit_acconfirm_code = ?;";
+                ppst = con.prepareStatement(query);
+                ppst.setInt(1,code);
+                ppst.execute();
+                NoteitApplication.log.add("AACCOUNT","Successfully activated user account!");
+                return 1;
             }
             return -2;
         }catch(SQLException e){
@@ -169,5 +177,52 @@ public class Database_Connector {
                     " ("+e.toString()+")");
             return -1;
         }
+    }
+
+    /**
+     * Function for checking sendmail flag data
+     * @return Integer
+     */
+    public int check_sendmail_flag(){
+        String query = "SELECT noteit_mailsend_flag FROM NOTEIT_HEALTH;";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                return rs.getInt("noteit_mailsend_flag");
+            }
+            return 0;
+        }catch(SQLException e){
+            NoteitApplication.log.add("MAILFLAG-FAILED","Failed to check send email flag ("+e.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for checking sendmail flag data
+     * @return Integer
+     */
+    public int check_2fa_flag(){
+        String query = "SELECT noteit_2fa_flag FROM NOTEIT_HEALTH;";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                return rs.getInt("noteit_2fa_flag");
+            }
+            return 0;
+        }catch(SQLException e){
+            NoteitApplication.log.add("MAILFLAG-FAILED","Failed to check send email flag ("+e.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     *
+     * @param mode
+     * @return
+     */
+    public int twofactor_settings(int mode){
+        String query = "UPDATE NOTEIT_HEALTH SET noteit_2fa_flag = ?"
     }
 }

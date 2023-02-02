@@ -35,6 +35,21 @@ public class MailTemplates {
         }catch(Exception e){
             NoteitApplication.log.add("MTEMPLATE-FAILED","Failed to create mail template ("+e.toString()+")");
         }
+    }
 
+    /**
+     * Function for creating template: 2FA AUTH
+     * @param noteit_user_id
+     * @param code
+     */
+    public void create_2fa_template(int noteit_user_id,String code){
+        try{
+            emailobj.subject = "Login activity - 2FA AUTH";
+            NoteIT_User user = new NoteIT_User(noteit_user_id);
+            emailobj.msgBody = "Dear "+user.noteit_user_name+",\nyour login code is: "+code+"\n\nNoteIT Team";
+            emailobj.recipient = user.noteit_user_email;
+        }catch(Exception e){
+            NoteitApplication.log.add("MTEMPLATE-FAILED","Failed to create mail template ("+e.toString()+")");
+        }
     }
 }

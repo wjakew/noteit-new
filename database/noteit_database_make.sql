@@ -24,11 +24,14 @@ CREATE TABLE NOTEIT_HEALTH -- table for storing application data
     noteit_mailserver_port VARCHAR(100),
     noteit_mailserver_username VARCHAR(100),
     noteit_mailserver_password VARCHAR(200),
-    noteit_adminpanel_password VARCHAR(200)
+    noteit_adminpanel_password VARCHAR(200),
+    noteit_mailsend_flag INT, -- 1 - send email, 0 - not set emails,
+    noteit_2fa_flag INT -- 1 - 2fa activated, 0 2fa off
 );
 INSERT INTO NOTEIT_HEALTH (noteit_database_version,noteit_mailserver_host,
-noteit_mailserver_port,noteit_mailserver_username,noteit_mailserver_password,noteit_adminpanel_password)
-VALUES ('100','smtp.gmail.com','587','main.tes.instruments@gmail.com','kufiynyvzjdtwjar','');
+noteit_mailserver_port,noteit_mailserver_username,noteit_mailserver_password,noteit_adminpanel_password,noteit_mailsend_flag
+,noteit_2fa_flag)
+VALUES ('100','smtp.gmail.com','587','main.tes.instruments@gmail.com','kufiynyvzjdtwjar','',0,0);
 CREATE TABLE NOTEIT_USER -- table for storing application users
 (
     noteit_user_id INT AUTO_INCREMENT PRIMARY KEY,
