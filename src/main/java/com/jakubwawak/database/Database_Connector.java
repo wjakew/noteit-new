@@ -8,6 +8,7 @@ package com.jakubwawak.database;
 import com.jakubwawak.maintanance.Configuration;
 import com.jakubwawak.noteit.NoteitApplication;
 
+import javax.print.DocFlavor;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -218,11 +219,73 @@ public class Database_Connector {
     }
 
     /**
-     *
+     * Function for setting 2fa flag on database
      * @param mode
-     * @return
+     * @return Integer
      */
     public int twofactor_settings(int mode){
-        String query = "UPDATE NOTEIT_HEALTH SET noteit_2fa_flag = ?"
+        String query = "UPDATE NOTEIT_HEALTH SET noteit_2fa_flag = ?";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setInt(1,mode);
+            ppst.execute();
+            NoteitApplication.log.add("2FA-SETTING","Set 2FA flag to: "+mode);
+            return 1;
+        }catch(SQLException e){
+            NoteitApplication.log.add("2FA-SETTING-FAILED","Failed to set flag ("+e.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for saving mail on database
+     * @param reciver
+     * @param content
+     * @return Integer
+     */
+    public int save_mail(String reciver, String content){
+        /**
+         * CREATE TABLE NOTEIT_MAIL_ARCHIVE -- table for storing mail archive
+         * (
+         *     noteit_mail_archive_id INT AUTO_INCREMENT PRIMARY KEY,
+         *     noteit_mail_emailto VARCHAR(200),
+         *     noteit_mail_time TIMESTAMP,
+         *     noteit_mail_content TEXT
+         * );
+         */
+        String query = "INSERT INTO NOTEIT_MAIL_ARCHIVE (noteit_mail_emailto,noteit_mail_time,noteit_mail_content) VALUES (?,?,?);";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setString(1,reciver);
+            ppst.setObject(2,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
+            ppst.setString(3,content);
+            ppst.execute();
+            NoteitApplication.log.add("MAIL-ARCHIVE","Added mail to archive! "+reciver);
+            return 1;
+        }catch(SQLException e){
+            NoteitApplication.log.add("MAIL-ARCHIVE-FAILED","Failed to add mail to archive ("+e.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for loading random login label
+     * @return value from NOTEITWELCOMENOTES table
+     */
+    public String get_random_loginlabel(){
+        String query = "SELECT * FROM NOTEIT_WELCOMENOTES;";
+        ArrayList<String> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while ( rs.next() ){
+                data.add(rs.getString("noteit_welcomenotes_text"));
+            }
+            int index = (int)(Math.random() * data.size());
+            return data.get(index);
+        }catch(SQLException e){
+            NoteitApplication.log.add("RN-LOGINLABEL-FAILED","Failed to get random login label ("+e.toString()+")");
+            return "";
+        }
     }
 }

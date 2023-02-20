@@ -17,12 +17,14 @@ import java.util.Scanner;
 public class NoteitMenu {
 
     public ArrayList<String> menuhistory;
+    boolean run;
 
     /**
      * Constructor
      */
     public NoteitMenu(){
         menuhistory = new ArrayList<>();
+        run = true;
     }
 
     /**
@@ -31,8 +33,11 @@ public class NoteitMenu {
     public void run(){
         String user_input;
         Scanner sc = new Scanner(System.in);
-        System.out.print(ConsoleColors.GREEN_BOLD+"noteit>"+ConsoleColors.RESET);
-        user_input = sc.nextLine();
+        while(run){
+            System.out.print(ConsoleColors.GREEN_BOLD+"noteit>"+ConsoleColors.RESET);
+            user_input = sc.nextLine();
+            mind(user_input);
+        }
     }
 
     /**
@@ -46,6 +51,7 @@ public class NoteitMenu {
                 case "exit":
                 {
                     System.out.println("Bye!");
+                    run = false;
                     System.exit(0);
                 }
                 case "setrole":
@@ -55,10 +61,12 @@ public class NoteitMenu {
                 }
                 case "2faenable":
                 {
+                    function_2faenable(user_input);
                     break;
                 }
                 case "2fadisable":
                 {
+                    function_2fadisable(user_input);
                     break;
                 }
             }
@@ -101,12 +109,28 @@ public class NoteitMenu {
     }
 
     /**
-     * Function for setting user input
+     * Function for setting 2fa flag
      * @param user_input
      */
     void function_2faenable(String user_input){
         if ( user_input.equals("2faenable")){
+            NoteitApplication.database.twofactor_settings(1);
+        }
+        else{
+            System.out.println("Wrong command usage!");
+        }
+    }
 
+    /**
+     * Function for setting 2fa flag
+     * @param user_input
+     */
+    void function_2fadisable(String user_input){
+        if ( user_input.equals("2fadisable")){
+            NoteitApplication.database.twofactor_settings(0);
+        }
+        else{
+            System.out.println("Wrong command usage!");
         }
     }
 

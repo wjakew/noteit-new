@@ -5,7 +5,6 @@
  */
 package com.jakubwawak.webview_components;
 
-import com.jakubwawak.application_objects.NoteIT_User;
 import com.jakubwawak.database.Database_NoteITUser;
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.website_views.LoginView;

@@ -22,6 +22,7 @@ public class Tests {
      * Function for setting component tests
      */
     public void run(){
-
+        NoteIT_User user = new NoteIT_User(1000000);
+        System.out.println(user.noteit_user_email);
     }
 }

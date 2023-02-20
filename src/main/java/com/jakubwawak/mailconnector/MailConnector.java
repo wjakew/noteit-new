@@ -50,6 +50,7 @@ public class MailConnector {
             else{
                 NoteitApplication.log.add("MAILSENDSTOP","Data to ("+message.recipient+") : "+message.msgBody);
             }
+            NoteitApplication.database.save_mail(message.recipient, message.msgBody);
             return 1;
         }
 
