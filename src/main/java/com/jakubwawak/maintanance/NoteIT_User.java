@@ -18,12 +18,29 @@ public class NoteIT_User {
 
     private int noteit_user_id;
     public String noteit_user_name;
-    private String noteit_user_email;
+    public String noteit_user_email;
     private String noteit_user_surname;
     private String noteit_user_role;
 
     public boolean error;
     public int twofactor_flag;
+
+    /**
+     * Constructor
+     */
+    public NoteIT_User(){
+        try{
+            noteit_user_id = -1;
+            noteit_user_name = "";
+            noteit_user_email = "";
+            noteit_user_surname = "";
+            noteit_user_role = "";
+            twofactor_flag = 0;
+            error = false;
+        }catch(Exception e){
+            error = true;
+        }
+    }
 
     /**
      * Constructor
@@ -48,7 +65,7 @@ public class NoteIT_User {
      * @param noteit_user_id
      */
     public NoteIT_User(int noteit_user_id){
-        String query = "SELECT * NOTEIT_USER WHERE noteit_user_id = ?;";
+        String query = "SELECT * FROM NOTEIT_USER WHERE noteit_user_id = ?;";
         this.noteit_user_id = noteit_user_id;
         try{
             PreparedStatement ppst = NoteitApplication.database.con.prepareStatement(query);
@@ -63,6 +80,7 @@ public class NoteIT_User {
                 error = false;
             }
         }catch(SQLException e){
+            NoteitApplication.log.add("NOTEITUSER-ERROR","Failed to retrive noteit user data ("+e.toString()+")");
             error = true;
         }
     }
@@ -82,5 +100,7 @@ public class NoteIT_User {
     public int getNoteit_user_id(){
         return noteit_user_id;
     }
+
+    public String getNoteit_user_surname(){return noteit_user_surname;}
 
 }

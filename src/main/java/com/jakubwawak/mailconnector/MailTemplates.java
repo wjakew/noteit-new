@@ -5,7 +5,7 @@
  */
 package com.jakubwawak.mailconnector;
 
-import com.jakubwawak.application_objects.NoteIT_User;
+import com.jakubwawak.maintanance.NoteIT_User;
 import com.jakubwawak.noteit.NoteitApplication;
 
 /**

@@ -6,15 +6,19 @@
 package com.jakubwawak.website_views;
 
 import com.jakubwawak.database.Database_NoteITUser;
+import com.jakubwawak.maintanance.NoteIT_User;
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.webview_components.CreateAccountDialog;
+import com.jakubwawak.webview_components.MessageComponent;
 import com.jakubwawak.webview_components.TwoFactorComponent;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -44,7 +48,7 @@ public class LoginView extends VerticalLayout {
         this.getElement().setAttribute("theme", Lumo.DARK); // loading state
         email_field = new TextField("E-Mail");
         password_field = new PasswordField("Password");
-        login_button = new Button("Login");
+        login_button = new Button("Login",this::login_action);
         createaccount_button = new Button("", VaadinIcon.PLUS.create(),this::createaccount_action);
 
         prepare_view();
@@ -59,16 +63,33 @@ public class LoginView extends VerticalLayout {
      * Function for preparing views
      */
     void prepare_view(){
+        H2 header_quote = new H2(NoteitApplication.database.get_random_loginlabel());
+        add(header_quote);
         StreamResource res = new StreamResource("icon.png", () -> {
             return LoginView.class.getClassLoader().getResourceAsStream("images/icon.png");
         });
+        HorizontalLayout hl_main = new HorizontalLayout();
+        VerticalLayout vl_left = new VerticalLayout(); VerticalLayout vl_right = new VerticalLayout();
         Image logo = new Image(res,"noteIT");
         logo.setHeight("512px");
         logo.setWidth("512px");
-        add(logo);
-        add(email_field);
-        add(password_field);
-        add(new HorizontalLayout(createaccount_button,login_button));
+        vl_left.add(logo);
+        vl_right.add(new H2("noteIT"),email_field,password_field,new HorizontalLayout(createaccount_button,login_button));
+
+
+        vl_left.setSizeFull();
+        vl_left.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        vl_left.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        vl_left.getStyle().set("text-align", "center");
+
+        vl_right.setSizeFull();
+        vl_right.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        vl_right.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        vl_right.getStyle().set("text-align", "center");
+
+        hl_main.add(vl_left,vl_right);
+        add(hl_main);
+        add(new Text(NoteitApplication.build+"/"+NoteitApplication.version));
     }
 
     /**
@@ -103,35 +124,53 @@ public class LoginView extends VerticalLayout {
                 case 2:
                 {
                     // login successfull - show 2fa window to confirm
+                    NoteitApplication.logged = new NoteIT_User();
                     NoteitApplication.logged.twofactor_flag = 1;
                     TwoFactorComponent tfc = new TwoFactorComponent(NoteitApplication.logged.getNoteit_user_id());
                     tfc.create_dialog();
                     add(tfc.main_dialog);
+                    tfc.main_dialog.open();
                     break;
                 }
                 case 1:
                 {
                     // login successfull - 2fa is not on - go to home page
+                    //go to home page
+                    login_button.getUI().ifPresent(ui ->
+                            ui.navigate("home"));
                     break;
                 }
                 case 0:
                 {
                     // user with given email not found
+                    Notification.show(email_field.getValue()+" not found in database!");
+                    email_field.setValue("");
+                    password_field.setValue("");
                     break;
                 }
                 case -2:
                 {
                     // user is not active
+                    MessageComponent mc = new MessageComponent("User is not active");
+                    add(mc.main_dialog);
+                    mc.main_dialog.open();
                     break;
                 }
                 case -3:
                 {
                     // user email not confirmed but logged successfully
+                    MessageComponent mc = new MessageComponent("User email is not confirmed! Check your mail.");
+                    add(mc.main_dialog);
+                    mc.main_dialog.open();
+                    // open mail-confirm page!
+                    login_button.getUI().ifPresent(ui ->
+                            ui.navigate("mailconfirm"));
                     break;
                 }
                 case -4:
                 {
                     // database error
+                    Notification.show("Database error! Check server log!");
                     break;
                 }
             }

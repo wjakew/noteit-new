@@ -42,7 +42,8 @@ CREATE TABLE NOTEIT_USER -- table for storing application users
 
     noteit_user_password VARCHAR(300), -- hashed password
     noteit_user_active INT, -- 0 - inactive, 1 - active
-    noteit_user_email_confirmed INT -- 0 - email not confirmed, 1 - email confirmed
+    noteit_user_email_confirmed INT, -- 0 - email not confirmed, 1 - email confirmed
+    noteit_user_hash_code VARCHAR(250)
 )AUTO_INCREMENT = 1000000;
 CREATE TABLE NOTEIT_ACCCONFIRM -- table for storing confirmation codes for accounts
 (
@@ -134,3 +135,19 @@ CREATE TABLE NOTEIT_OBJECT -- table for storing notes
 
     CONSTRAINT fk_object1 FOREIGN KEY (noteit_vault_id) REFERENCES NOTEIT_VAULT (noteid_vault_id)
 );
+CREATE TABLE NOTEIT_MAIL_ARCHIVE -- table for storing mail archive
+(
+    noteit_mail_archive_id INT AUTO_INCREMENT PRIMARY KEY,
+    noteit_mail_emailto VARCHAR(200),
+    noteit_mail_time TIMESTAMP,
+    noteit_mail_content TEXT
+);
+
+CREATE TABLE NOTEIT_WELCOMENOTES -- table for storing welcome notes
+(
+    noteit_welcomenotes_id INT AUTO_INCREMENT PRIMARY KEY,
+    noteit_welcomenotes_text TEXT
+);
+
+INSERT INTO NOTEIT_WELCOMENOTES (noteit_welcomenotes_text) VALUES('You didn’t expect these notes to turn into my therapy session, did you?');
+INSERT INTO NOTEIT_WELCOMENOTES (noteit_welcomenotes_text) VALUES('Gift yourself with a journal for your own notes.');

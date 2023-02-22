@@ -51,9 +51,10 @@ public class Database_NoteITUser {
 
             // email not in the database - create account
             String query = "INSERT INTO NOTEIT_USER (noteit_user_name,noteit_user_surname" +
-                    ",noteit_user_email,noteit_user_password,noteit_user_role,noteit_user_active,noteit_user_email_confirmed) VALUES" +
+                    ",noteit_user_email,noteit_user_password,noteit_user_role,noteit_user_active,noteit_user_email_confirmed,noteit_user_hash_code) VALUES" +
                     "(?,?,?,?,?,?,?);";
             try{
+                RandomString randomString = new RandomString(8);
                 Password_Validator pv = new Password_Validator(password);
                 PreparedStatement ppst = database.con.prepareStatement(query);
                 ppst.setString(1,name);
@@ -63,6 +64,7 @@ public class Database_NoteITUser {
                 ppst.setString(5,"USER");
                 ppst.setInt(6,1);
                 ppst.setInt(7,0);
+                ppst.setString(8,randomString.buf);
                 ppst.execute();
                 // here user already created
                 int noteit_user_id = checkuserid(email);
@@ -121,15 +123,18 @@ public class Database_NoteITUser {
                                 mt.create_2fa_template(rs.getInt("noteit_user_id"),code);
                                 MailConnector mc = new MailConnector();
                                 mc.send_email(mt.emailobj);
+                                NoteitApplication.log.add("LOGIN","Prepared 2Fa for user, login correct ("+email+")");
                                 return 2;
                             }
                             else{
                                 NoteitApplication.logged = new NoteIT_User(rs);
+                                NoteitApplication.log.add("LOGIN","Login successfull! ("+email+")");
                                 return 1;
                             }
                         }
                         else{
                             // user email not confirmed by logged successfully
+                            NoteitApplication.log.add("LOGIN","Login successfull but email not confirmed! ("+email+")");
                             return -3;
                         }
                     }
@@ -142,6 +147,126 @@ public class Database_NoteITUser {
             }
         }
     }
+
+    /**
+     * Function for setting 2fa code inactive after usage
+     * @param twofactor_code
+     * @return 1 - code set, -1 - database error
+     */
+    int set_2facode_inactive(String twofactor_code){
+        String query = "UPDATE NOTEIT_2FA SET noteit_2fa_active = 0 where noteit_2fa_code = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setString(1,twofactor_code);
+            ppst.execute();
+            NoteitApplication.log.add("2FACODE-FLAG","2FA code ("+twofactor_code+") set to 0");
+            return 1;
+        }catch(SQLException e){
+            NoteitApplication.log.add("2FACODE-FLAG-FAILED","Failed to set 2fa flag active 0 ("+e.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for cleaning 2fa codes from database
+     * @param noteit_user_id
+     * @return 1 - codes cleared, -1 - database error
+     */
+    int clear_user_2facodes(int noteit_user_id){
+        String query = "DELETE FROM NOTEIT_2FA where noteit_user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_user_id);
+            ppst.execute();
+            NoteitApplication.log.add("2FA-REMOVE","Removed all 2FA codes for ID "+noteit_user_id);
+            return 1;
+        }catch(SQLException e){
+            NoteitApplication.log.add("2FACODE-FLAG","Failed to remove 2fa codes ("+e.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for logging user with 2fa code
+     * @param twofactor_code
+     * @return 1 - user logged successfully, -1 - database error -2 - wrong 2fa code, -3 - 2fa code too old, -4 - 2fa code not active
+     */
+    public int login_user(String twofactor_code){
+        String query = "SELECT * FROM NOTEIT_2FA WHERE noteit_2fa_code = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setString(1,twofactor_code);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                // code correct
+                int nami_user_id = rs.getInt("noteit_user_id");
+                LocalDateTime time = rs.getObject("noteit_2fa_time", LocalDateTime.class);
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+                if ( now.plusMinutes(10).isAfter(time) ){
+                    // time is ok
+                    if ( rs.getInt("noteit_2fa_active") == 1) {
+                        // code still active
+                        NoteitApplication.logged = new NoteIT_User(nami_user_id);
+                        NoteitApplication.log.add("2FA-LOGIN-SUCCESS","User "+NoteitApplication.logged.getNoteit_user_email()+" logged with 2fa: "+twofactor_code);
+                        set_2facode_inactive(twofactor_code);
+                        return 1;
+                    }
+                    // code is not active
+                    NoteitApplication.log.add("2FA-LOGIN-NOTACTIVE","User used not active code ("+twofactor_code+")");
+                    clear_user_2facodes(rs.getInt("noteit_user_id"));
+                    return -4;
+                }
+                NoteitApplication.log.add("2FA-LOGIN-OLD","User trying to use old 2fa code ("+twofactor_code+")");
+                clear_user_2facodes(rs.getInt("noteit_user_id"));
+                return -3;
+            }
+            else{
+                // wrong 2fa code
+                return -2;
+            }
+        }catch(Exception ex){
+            NoteitApplication.log.add("2FA-LOGIN-FAILED","Failed to login user with 2fa code ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for confirming code
+     * @param confirmation_code
+     * @return -2 - given code didn't exists, -1 - database error, 1 - confirmed!
+     */
+    public int confirm_email(String confirmation_code){
+        // check if code is active on database
+        String query = "SELECT * FROM NOTEIT_ACCCONFIRM WHERE noteit_accconfirm_code = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setString(1,confirmation_code);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                // code exists - remove code from database
+                query = "DELETE FROM NOTEIT_ACCCONFIRM WHERE noteit_accconfirm_code = ? and noteit_user_id = ?;";
+                PreparedStatement ppst2 = database.con.prepareStatement(query);
+                ppst2.setString(1,confirmation_code);
+                ppst2.setInt(2,rs.getInt("noteit_user_id"));
+                ppst2.execute();
+                query = "UPDATE NOTEIT_USER SET noteit_user_email_confirmed = 1 where noteit_user_id = ?;";
+                PreparedStatement ppst3 = database.con.prepareStatement(query);
+                ppst3.setInt(1,rs.getInt("noteit_user_id"));
+                ppst3.execute();
+                NoteitApplication.log.add("CONFIRM-EMAIL","Email confirmed for ID "+rs.getInt("noteit_user_id"));
+                return 1;
+            }
+            else{
+                // code didn't exist
+                return -2;
+            }
+        }catch(SQLException e){
+            NoteitApplication.log.add("CONFIRM-EMAIL-FAILED","Failed to confirm email ("+e.toString()+")");
+            return -1;
+        }
+
+    }
+
 
     /**
      * Function for creating standard user configuration on database

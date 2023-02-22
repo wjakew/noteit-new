@@ -6,10 +6,7 @@
 package com.jakubwawak.noteit;
 
 import com.jakubwawak.database.Database_Connector;
-import com.jakubwawak.maintanance.Configuration;
-import com.jakubwawak.maintanance.ConsoleColors;
-import com.jakubwawak.maintanance.NoteIT_Logger;
-import com.jakubwawak.maintanance.NoteIT_User;
+import com.jakubwawak.maintanance.*;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NoteitApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "noteit-270123REV1";
+	public static String build = "noteit-220223REV1";
 
 	public static int debug = 1;
 	public static int test = 0;
@@ -61,10 +58,14 @@ public class NoteitApplication {
 				log.add("CONNECTION","Connected to database successfully!");
 				if ( test == 1 ){
 					//run tests
+					Tests test = new Tests();
+					test.run();
 				}
 				else{
 					//run application server
 					SpringApplication.run(NoteitApplication.class, args);
+					NoteitMenu menu = new NoteitMenu();
+					menu.run();
 				}
 			}
 			// connection failed
