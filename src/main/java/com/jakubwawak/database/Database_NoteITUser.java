@@ -12,6 +12,7 @@ import com.jakubwawak.maintanance.NoteIT_User;
 import com.jakubwawak.maintanance.Password_Validator;
 import com.jakubwawak.maintanance.RandomString;
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.StringElement;
 import org.springframework.mail.MailSender;
 
 import java.sql.PreparedStatement;
@@ -19,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -51,8 +53,8 @@ public class Database_NoteITUser {
 
             // email not in the database - create account
             String query = "INSERT INTO NOTEIT_USER (noteit_user_name,noteit_user_surname" +
-                    ",noteit_user_email,noteit_user_password,noteit_user_role,noteit_user_active,noteit_user_email_confirmed,noteit_user_hash_code) VALUES" +
-                    "(?,?,?,?,?,?,?);";
+                    ",noteit_user_email,noteit_user_password,noteit_user_role,noteit_user_active,noteit_user_email_confirmed,noteit_user_hash_code,noteit_user_dayofcreation) VALUES" +
+                    "(?,?,?,?,?,?,?,?,?);";
             try{
                 RandomString randomString = new RandomString(8);
                 Password_Validator pv = new Password_Validator(password);
@@ -65,6 +67,7 @@ public class Database_NoteITUser {
                 ppst.setInt(6,1);
                 ppst.setInt(7,0);
                 ppst.setString(8,randomString.buf);
+                ppst.setObject(9,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
                 ppst.execute();
                 // here user already created
                 int noteit_user_id = checkuserid(email);
@@ -332,6 +335,26 @@ public class Database_NoteITUser {
             NoteitApplication.log.add("GETIDBYEMAIL-FAILED","Failed to get user ID ("+e.toString()+")");
             return -1;
         }
+    }
+
+    /**
+     * Function for getting list of users
+     * @return ArrayList collection of StringElements containing
+     */
+    public ArrayList<StringElement> get_list_of_users(){
+        String query = "SELECT * FROM NOTEIT_USER;";
+        ArrayList<StringElement> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add(new StringElement(rs.getInt("noteit_user_id")+":"+rs.getString("noteit_user_email")));
+            }
+            NoteitApplication.log.add("GET-USER-LIST","Loaded list of users (size:"+data.size()+")");
+        }catch(SQLException e){
+            NoteitApplication.log.add("GET-USER-LIST-FAILED","Failed to get list of users ("+e.toString()+")");
+        }
+        return data;
     }
 
 

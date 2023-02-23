@@ -3,7 +3,7 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.webview_components;
+package com.jakubwawak.website.webview_components;
 
 import com.jakubwawak.database.Database_NoteITUser;
 import com.jakubwawak.maintanance.NoteIT_User;
@@ -18,7 +18,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import org.atmosphere.interceptor.AtmosphereResourceStateRecovery;
 
 /**
  * Object for creating two-factor authentication

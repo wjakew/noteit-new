@@ -101,6 +101,16 @@ public class NoteIT_User {
         return noteit_user_id;
     }
 
+    /**
+     * Getter for noteit_user_surname
+     * @return user surname
+     */
     public String getNoteit_user_surname(){return noteit_user_surname;}
+
+    /**
+     * Getter for noteit_user_role
+     * @return user role
+     */
+    public String getNoteit_user_role(){return noteit_user_role;}
 
 }

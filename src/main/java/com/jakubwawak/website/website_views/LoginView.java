@@ -3,14 +3,14 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.website_views;
+package com.jakubwawak.website.website_views;
 
 import com.jakubwawak.database.Database_NoteITUser;
 import com.jakubwawak.maintanance.NoteIT_User;
 import com.jakubwawak.noteit.NoteitApplication;
-import com.jakubwawak.webview_components.CreateAccountDialog;
-import com.jakubwawak.webview_components.MessageComponent;
-import com.jakubwawak.webview_components.TwoFactorComponent;
+import com.jakubwawak.website.webview_components.CreateAccountDialog;
+import com.jakubwawak.website.webview_components.MessageComponent;
+import com.jakubwawak.website.webview_components.TwoFactorComponent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -151,7 +151,7 @@ public class LoginView extends VerticalLayout {
                 case -2:
                 {
                     // user is not active
-                    MessageComponent mc = new MessageComponent("User is not active");
+                    MessageComponent mc = new MessageComponent("User is not active.Contact server administrator!");
                     add(mc.main_dialog);
                     mc.main_dialog.open();
                     break;

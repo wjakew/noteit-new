@@ -3,11 +3,11 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.webview_components;
+package com.jakubwawak.website.webview_components;
 
 import com.jakubwawak.database.Database_NoteITUser;
 import com.jakubwawak.noteit.NoteitApplication;
-import com.jakubwawak.website_views.LoginView;
+import com.jakubwawak.website.website_views.LoginView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;

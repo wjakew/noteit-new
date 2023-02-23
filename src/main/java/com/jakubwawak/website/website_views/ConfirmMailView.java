@@ -3,12 +3,11 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.website_views;
+package com.jakubwawak.website.website_views;
 
 import com.jakubwawak.database.Database_NoteITUser;
 import com.jakubwawak.noteit.NoteitApplication;
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
@@ -18,7 +17,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.lumo.Lumo;
 

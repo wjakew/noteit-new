@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NoteitApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "noteit-220223REV1";
+	public static String build = "noteit-230223REV1";
 
 	public static int debug = 1;
 	public static int test = 0;

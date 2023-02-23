@@ -3,11 +3,13 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.web_layouts;
+package com.jakubwawak.website.website_layouts;
 
 import com.jakubwawak.noteit.NoteitApplication;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -15,6 +17,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 /**
@@ -26,20 +29,18 @@ public class MainLayout extends AppLayout {
      * Constructor
      */
 
-    Button home_button, logout_button;
-    H3 logo;
+    Button home_button, logout_button, adminpanel_button;
+    DrawerToggle main_toggle;
 
     public MainLayout(){
         this.getElement().setAttribute("theme", Lumo.DARK);
         home_button = new Button("NoteIT",this::homebutton_action);
         logout_button = new Button("Log out!",this::logoutbutton_action);
-        if ( NoteitApplication.logged != null ){
-            logo = new H3("Welcome, "+NoteitApplication.logged.noteit_user_name+" "+NoteitApplication.logged.getNoteit_user_surname());
-        }
-        else{
-            logo = new H3("");
-        }
+        adminpanel_button = new Button("Manage Server");
+        main_toggle = new DrawerToggle();
+        this.setDrawerOpened(false);
         createHeader();
+        createMenu();
     }
 
     /**
@@ -68,8 +69,7 @@ public class MainLayout extends AppLayout {
      */
     private void createHeader(){
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
-            Icon vaadinIcon = new Icon(VaadinIcon.NOTEBOOK);
-            HorizontalLayout header = new HorizontalLayout(vaadinIcon,home_button,logout_button,logo);
+            HorizontalLayout header = new HorizontalLayout(main_toggle,home_button);
             header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
             header.setWidth("100%");
             header.addClassNames("py-0", "px-m");
@@ -82,6 +82,25 @@ public class MainLayout extends AppLayout {
             header.setWidth("100%");
             header.addClassNames("py-0", "px-m");
             addToNavbar(header);
+        }
+    }
+
+    /**
+     * Function for creating side menu (drawer)
+     */
+    private void createMenu(){
+        if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
+            adminpanel_button.setSizeFull();logout_button.setSizeFull();
+            adminpanel_button.setHeight("50px");logout_button.setHeight("50px");
+            VerticalLayout vl = new VerticalLayout();
+            if ( NoteitApplication.logged.getNoteit_user_role().equals("SUPERUSER")){
+                vl.add(adminpanel_button);
+            }
+            vl.add(logout_button);
+
+            vl.add(new Text(NoteitApplication.build+"/"+NoteitApplication.version));
+            vl.setAlignItems(FlexComponent.Alignment.CENTER);
+            addToDrawer(vl);
         }
     }
 }
