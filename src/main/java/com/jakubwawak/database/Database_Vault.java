@@ -6,8 +6,10 @@
 package com.jakubwawak.database;
 
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.Vault;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -54,7 +56,28 @@ public class Database_Vault {
             NoteitApplication.log.add("VAULT-CREATE-FAILED","Failed to create vault ("+e.toString()+")");
             return -1;
         }
+    }
 
+    /**
+     * Function for listing all vaults in which logged user is owner or member
+     * @return ArrayList collection
+     */
+    public ArrayList<Vault> get_vaults(){
+        String query = "SELECT * FROM NOTEIT_VAULT;";
+        ArrayList<Vault> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                if ( rs.getInt("noteit_user_id") == NoteitApplication.logged.getNoteit_user_id() || rs.getString("noteit_vault_members").contains(NoteitApplication.logged.getNoteit_user_id()+",")){
+                    data.add(new Vault(rs));
+                }
+            }
+            NoteitApplication.log.add("VAULT-LIST-LOAD","Loaded "+data.size()+" vaults");
+        }catch(SQLException e){
+            NoteitApplication.log.add("VAULT-LIST-FAILED","Failed to list vaults ("+e.toString()+")");
+        }
+        return data;
     }
 
 }

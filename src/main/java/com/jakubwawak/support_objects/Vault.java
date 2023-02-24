@@ -75,4 +75,12 @@ public class Vault {
             error = true;
         }
     }
+
+    /**
+     * Function for returning naming glance for web components
+     * @return String
+     */
+    public String get_glance(){
+        return noteit_vault_id+":"+noteit_vault_name;
+    }
 }

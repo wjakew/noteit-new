@@ -22,7 +22,7 @@ import org.atmosphere.interceptor.AtmosphereResourceStateRecovery;
 @Route(value = "home", layout = MainLayout.class)
 public class HomeView extends VerticalLayout {
 
-    Button createvault_button;
+    Button createvault_button, createnote_button;
 
     /**
      * Constructor
@@ -40,6 +40,7 @@ public class HomeView extends VerticalLayout {
      */
     void create_buttons(){
         createvault_button = new Button("Create New Vault",VaadinIcon.PLUS.create(),this::createvault_action);
+        createnote_button = new Button("Create New Note",VaadinIcon.NOTEBOOK.create());
     }
 
     /**
