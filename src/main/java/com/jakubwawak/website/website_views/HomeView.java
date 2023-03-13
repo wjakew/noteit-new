@@ -7,6 +7,7 @@ package com.jakubwawak.website.website_views;
 
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.website.website_layouts.MainLayout;
+import com.jakubwawak.website.webview_components.CreateNoteDialog;
 import com.jakubwawak.website.webview_components.ModifyVaultComponent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
@@ -40,7 +41,7 @@ public class HomeView extends VerticalLayout {
      */
     void create_buttons(){
         createvault_button = new Button("Create New Vault",VaadinIcon.PLUS.create(),this::createvault_action);
-        createnote_button = new Button("Create New Note",VaadinIcon.NOTEBOOK.create());
+        createnote_button = new Button("Create New Note",VaadinIcon.NOTEBOOK.create(),this::createnote_action);
     }
 
     /**
@@ -60,7 +61,7 @@ public class HomeView extends VerticalLayout {
             // view can be created, user is logged
             add(new H1("Welcome, "+NoteitApplication.logged.noteit_user_name+" "+NoteitApplication.logged.getNoteit_user_surname()+"!"));
             HorizontalLayout quickbutton_layout = new HorizontalLayout();
-            quickbutton_layout.add(createvault_button);
+            quickbutton_layout.add(createvault_button,createnote_button);
             add(quickbutton_layout);
 
         }
@@ -75,6 +76,11 @@ public class HomeView extends VerticalLayout {
         ModifyVaultComponent mvc = new ModifyVaultComponent(0,null);
         add(mvc.main_dialog);
         mvc.main_dialog.open();
+    }
+    private void createnote_action(ClickEvent e){
+        CreateNoteDialog cnd = new CreateNoteDialog(0);
+        add(cnd.main_dialog);
+        cnd.main_dialog.open();
     }
     //----------------end of section
 }

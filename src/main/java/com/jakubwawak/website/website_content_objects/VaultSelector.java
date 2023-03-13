@@ -16,13 +16,14 @@ import java.util.ArrayList;
  * Object for creating component for selecting vaults
  */
 public class VaultSelector {
-    public ComboBox combobox;
+    public ComboBox<Vault> combobox;
 
     /**
      * Constructor
      */
     public VaultSelector(){
         combobox = new ComboBox("Your Vaults");
+        create_component();
     }
 
     /**
@@ -31,8 +32,8 @@ public class VaultSelector {
     void create_component(){
         Database_Vault dv = new Database_Vault(NoteitApplication.database);
         combobox.setItems(dv.get_vaults());
+        combobox.setItemLabelGenerator(Vault::get_glance);
         combobox.setAllowCustomValue(false);
-
     }
 
     /**

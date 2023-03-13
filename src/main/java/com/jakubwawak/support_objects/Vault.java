@@ -18,6 +18,18 @@ import java.util.ArrayList;
  */
 public class Vault {
 
+    /**
+     * CREATE TABLE NOTEIT_VAULT -- table for storing note vaults
+     * (
+     *     noteid_vault_id INT AUTO_INCREMENT PRIMARY KEY,
+     *     noteit_user_id INT,
+     *     noteit_vault_name VARCHAR(300),
+     *     noteit_vault_members VARCHAR(300),
+     *
+     *     CONSTRAINT fk_vault1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id) ON DELETE CASCADE
+     * )AUTO_INCREMENT = 1000;
+     */
+
     public int noteit_vault_id;
     public String noteit_vault_name;
 
@@ -38,7 +50,7 @@ public class Vault {
         try{
             Database_NoteITUser dniu = new Database_NoteITUser(NoteitApplication.database);
             noteit_vault_members = new ArrayList<>();
-            noteit_vault_id = to_add.getInt("noteit_vault_id");
+            noteit_vault_id = to_add.getInt("noteid_vault_id");
             noteit_vault_name = to_add.getString("noteit_vault_name");
             for(String element : to_add.getString("noteit_vault_members").split(",")){
                 try{

@@ -125,13 +125,13 @@ CREATE TABLE NOTEIT_2FA -- table for storing 2fa codes
 
     CONSTRAINT fk_2fa1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
 );
-
 CREATE TABLE NOTEIT_OBJECT -- table for storing notes
 (
     noteit_object_id INT AUTO_INCREMENT PRIMARY KEY,
     noteit_vault_id INT,
-    noteit_object_name TIMESTAMP,
+    noteit_object_time TIMESTAMP,
     noteit_object_title VARCHAR(300),
+    noteit_object_rawtext TEXT,
     noteit_object_blob BLOB,
 
     CONSTRAINT fk_object1 FOREIGN KEY (noteit_vault_id) REFERENCES NOTEIT_VAULT (noteid_vault_id)

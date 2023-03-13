@@ -25,7 +25,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 public class ConfirmMailView extends VerticalLayout {
 
     H1 header;
-    Button confirm_button;
+    Button confirm_button,later_button;
     TextField activationcode_field;
 
     /**
@@ -35,6 +35,7 @@ public class ConfirmMailView extends VerticalLayout {
         this.getElement().setAttribute("theme", Lumo.DARK); // loading state
         header = new H1("Confirm your E-Mail!");
         confirm_button = new Button("Submit!",this::confirmbutton_action);
+        later_button = new Button("Later...");
         activationcode_field = new TextField();
         prepare_view();
     }
