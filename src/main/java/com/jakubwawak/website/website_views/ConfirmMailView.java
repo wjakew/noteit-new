@@ -34,6 +34,7 @@ public class ConfirmMailView extends VerticalLayout {
     public ConfirmMailView(){
         this.getElement().setAttribute("theme", Lumo.DARK); // loading state
         header = new H1("Confirm your E-Mail!");
+        NoteitApplication.main_layout = this;
         confirm_button = new Button("Submit!",this::confirmbutton_action);
         later_button = new Button("Later...");
         activationcode_field = new TextField();

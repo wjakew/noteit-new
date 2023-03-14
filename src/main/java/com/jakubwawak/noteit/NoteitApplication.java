@@ -7,6 +7,7 @@ package com.jakubwawak.noteit;
 
 import com.jakubwawak.database.Database_Connector;
 import com.jakubwawak.maintanance.*;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NoteitApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "noteit-130323REV1";
+	public static String build = "noteit-140323REV1";
 
 	public static int debug = 1;
 	public static int test = 0;
@@ -27,6 +28,8 @@ public class NoteitApplication {
 	public static String user_2fa_code;
 	public static NoteIT_User logged;
 
+	public static VerticalLayout main_layout;
+
 	/**
 	 * Main application function
 	 * @param args
@@ -35,6 +38,7 @@ public class NoteitApplication {
 		show_header();
 		user_2fa_code = "";
 		logged = null;
+		main_layout = null;
 		// looking for configuration file
 		Configuration config = new Configuration();
 		log = new NoteIT_Logger();

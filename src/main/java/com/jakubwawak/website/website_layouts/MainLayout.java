@@ -6,6 +6,7 @@
 package com.jakubwawak.website.website_layouts;
 
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.website.webview_components.CreateToDoDialog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -30,13 +31,16 @@ public class MainLayout extends AppLayout {
      */
 
     Button home_button, logout_button, adminpanel_button;
+
+    Button addtodo_button;
     DrawerToggle main_toggle;
 
     public MainLayout(){
         this.getElement().setAttribute("theme", Lumo.DARK);
         home_button = new Button("NoteIT",this::homebutton_action);
         logout_button = new Button("Log out!",this::logoutbutton_action);
-        adminpanel_button = new Button("Manage Server");
+        addtodo_button = new Button("Add new ToDo",VaadinIcon.PLUS.create(),this::addtodobutton_action);
+        adminpanel_button = new Button("Manage Server",VaadinIcon.COMPILE.create(),this::manageserverbutton_action);
         main_toggle = new DrawerToggle();
         this.setDrawerOpened(false);
         createHeader();
@@ -65,11 +69,29 @@ public class MainLayout extends AppLayout {
     }
 
     /**
+     * Function for opening server admin panel
+     * @param e
+     */
+    private void manageserverbutton_action(ClickEvent e){
+        adminpanel_button.getUI().ifPresent(ui -> ui.navigate("manage-server"));
+    }
+
+    /**
+     * Function for opening dialog for creating new to-do object
+     * @param e
+     */
+    private void addtodobutton_action(ClickEvent e){
+        CreateToDoDialog ctdd = new CreateToDoDialog(0);
+        NoteitApplication.main_layout.add(ctdd.main_dialog);
+        ctdd.main_dialog.open();
+    }
+
+    /**
      * Function for creating header
      */
     private void createHeader(){
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
-            HorizontalLayout header = new HorizontalLayout(main_toggle,home_button);
+            HorizontalLayout header = new HorizontalLayout(main_toggle,home_button,addtodo_button);
             header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
             header.setWidth("100%");
             header.addClassNames("py-0", "px-m");

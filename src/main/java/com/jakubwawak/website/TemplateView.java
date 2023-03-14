@@ -29,6 +29,7 @@ public class TemplateView extends VerticalLayout {
      */
     public TemplateView(){
         create_view();
+        NoteitApplication.main_layout = this;
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -57,12 +58,19 @@ public class TemplateView extends VerticalLayout {
         create_components();
         if (NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
             // view can be created, user is logged
-
+            prepare_view();
         }
         else{
             // show error screen
             add(new H1("User login error!"));
         }
+    }
+
+    /**
+     * Function for preparing view
+     */
+    void prepare_view(){
+
     }
 
 

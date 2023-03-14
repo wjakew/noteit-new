@@ -8,6 +8,7 @@ package com.jakubwawak.website.website_views;
 import com.jakubwawak.database.Database_NoteITUser;
 import com.jakubwawak.maintanance.NoteIT_User;
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.Note;
 import com.jakubwawak.website.webview_components.CreateAccountDialog;
 import com.jakubwawak.website.webview_components.MessageComponent;
 import com.jakubwawak.website.webview_components.TwoFactorComponent;
@@ -46,6 +47,7 @@ public class LoginView extends VerticalLayout {
      */
     public LoginView(){
         this.getElement().setAttribute("theme", Lumo.DARK); // loading state
+        NoteitApplication.main_layout = this;
         email_field = new TextField("E-Mail");
         password_field = new PasswordField("Password");
         login_button = new Button("Login",this::login_action);
@@ -74,8 +76,14 @@ public class LoginView extends VerticalLayout {
         logo.setHeight("512px");
         logo.setWidth("512px");
         vl_left.add(logo);
-        vl_right.add(new H2("noteIT"),email_field,password_field,new HorizontalLayout(createaccount_button,login_button));
+        vl_right.add(new H2("noteIT"),email_field,password_field);
 
+        if (NoteitApplication.database.get_newusercreationflag() == 1){
+            vl_right.add(new HorizontalLayout(createaccount_button,login_button));
+        }
+        else{
+            vl_right.add(login_button);
+        }
 
         vl_left.setSizeFull();
         vl_left.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);

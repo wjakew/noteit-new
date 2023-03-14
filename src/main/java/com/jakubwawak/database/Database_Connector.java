@@ -74,6 +74,25 @@ public class Database_Connector {
     }
 
     /**
+     * Function for loading noteit_newuser_flag value from database
+     * @return noteit_newuser_flag value, -2 - database fragmentation error, -1 - database error
+     */
+    public int get_newusercreationflag(){
+        String query = "SELECT noteit_newuser_flag FROM NOTEIT_HEALTH;";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            if (rs.next()){
+                return rs.getInt("noteit_newuser_flag");
+            }
+            return -2;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("HEALTH-CR-FLAG-FAILED","Failed to load health creation user flag ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
      * Function for getting mail data from database
      * @return ArrayList collection of mail server information
      */

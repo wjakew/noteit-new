@@ -114,10 +114,10 @@ public class CreateAccountDialog {
                     Database_NoteITUser dniu = new Database_NoteITUser(NoteitApplication.database);
                     int ans = dniu.createuser(name_field.getValue(),surname_field.getValue(),email_field.getValue(),"USER",password1_field.getValue());
                     if ( ans == 1 ){
-                        Notification.show("Account created! Check your email.");
+                        Notification.show("Account requested! Wait for server owner response!");
                     }
                     else if (ans == -1){
-                        Notification.show("Account created but mail failed to send,\nContact system administrator!");
+                        Notification.show("Account requested but mail failed to send,\nContact system administrator!");
                     }
                     else if (ans == -3){
                         Notification.show("Account with this email address is already created!");

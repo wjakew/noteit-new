@@ -26,12 +26,13 @@ CREATE TABLE NOTEIT_HEALTH -- table for storing application data
     noteit_mailserver_password VARCHAR(200),
     noteit_adminpanel_password VARCHAR(200),
     noteit_mailsend_flag INT, -- 1 - send email, 0 - not set emails,
-    noteit_2fa_flag INT -- 1 - 2fa activated, 0 2fa off
+    noteit_2fa_flag INT, -- 1 - 2fa activated, 0 2fa off
+    noteit_newuser_flag INT -- 1 - enable new account creation, -1 - disable new account creation
 );
 INSERT INTO NOTEIT_HEALTH (noteit_database_version,noteit_mailserver_host,
 noteit_mailserver_port,noteit_mailserver_username,noteit_mailserver_password,noteit_adminpanel_password,noteit_mailsend_flag
-,noteit_2fa_flag)
-VALUES ('100','smtp.gmail.com','587','main.tes.instruments@gmail.com','kufiynyvzjdtwjar','',0,0);
+,noteit_2fa_flag,noteit_newuser_flag)
+VALUES ('100','smtp.gmail.com','587','main.tes.instruments@gmail.com','kufiynyvzjdtwjar','',0,0,0);
 CREATE TABLE NOTEIT_USER -- table for storing application users
 (
     noteit_user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,6 +47,8 @@ CREATE TABLE NOTEIT_USER -- table for storing application users
     noteit_user_hash_code VARCHAR(250),
     noteit_user_dayofcreation TIMESTAMP
 )AUTO_INCREMENT = 1000000;
+INSERT INTO NOTEIT_USER (noteit_user_name,noteit_user_surname,noteit_user_email,noteit_user_role,noteit_user_password,noteit_user_active,noteit_user_email_confirmed,noteit_user_hash_code,noteit_user_dayofcreation)
+VALUES ('Admin','Admin','kubawawak@gmail.com','SUPERUSER','d7b7f6c245586ebf19960b22713ea7d7',1,1,'asdfhbsaasj',null);
 CREATE TABLE NOTEIT_ACCCONFIRM -- table for storing confirmation codes for accounts
 (
     noteit_accconfirm_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,14 +57,14 @@ CREATE TABLE NOTEIT_ACCCONFIRM -- table for storing confirmation codes for accou
 
     CONSTRAINT fk_noteaccc1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
 );
-CREATE TABLE NOTEIT_TODO -- table for storing todo objects
+CREATE TABLE NOTEIT_TODO -- table for storing to-do objects
 (
     noteit_todo_id INT AUTO_INCREMENT PRIMARY KEY,
     noteit_user_id INT,
     noteit_todo_time TIMESTAMP,
     noteit_todo_deadline TIMESTAMP,
     noteit_todo_desc TEXT,
-    noteit_todo_state INT,
+    noteit_todo_state INT, -- 1 - to-do done, 0 - to-do not done
 
     CONSTRAINT fk_todo1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
 );

@@ -64,7 +64,7 @@ public class Database_NoteITUser {
                 ppst.setString(3,email);
                 ppst.setString(4,pv.hash());
                 ppst.setString(5,"USER");
-                ppst.setInt(6,1);
+                ppst.setInt(6,0);
                 ppst.setInt(7,0);
                 ppst.setString(8,randomString.buf);
                 ppst.setObject(9,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));

@@ -30,6 +30,7 @@ public class HomeView extends VerticalLayout {
      */
     public HomeView(){
         create_view();
+        NoteitApplication.main_layout = this;
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
