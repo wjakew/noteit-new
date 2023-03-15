@@ -14,6 +14,7 @@ import com.jakubwawak.website.website_layouts.MainLayout;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -48,7 +49,7 @@ public class ManageServerView extends VerticalLayout {
      * Function for creating buttons
      */
     void create_buttons(){
-        enablenewusers_button = new Button();
+        enablenewusers_button = new Button("",this::enablenewusers_button_action);
         enablenewusers_button.setHeight("50px");
     }
 
@@ -113,7 +114,20 @@ public class ManageServerView extends VerticalLayout {
     //----------------section for actions and validators
     private void enablenewusers_button_action(ClickEvent e){
         switch(enablenewusers_button.getText()){
-
+            case "0 : User creation disabled!":
+            {
+                NoteitApplication.database.set_newusercreationflag(1);
+                enablenewusers_button.setText("1 : User creation enabled!");
+                Notification.show("Updated!");
+                break;
+            }
+            case "1 : User creation enabled!":
+            {
+                NoteitApplication.database.set_newusercreationflag(0);
+                enablenewusers_button.setText("0 : User creation disabled!");
+                Notification.show("Updated!");
+                break;
+            }
         }
     }
     //----------------end of section

@@ -93,6 +93,25 @@ public class Database_Connector {
     }
 
     /**
+     * Function for updating value of noteit_newuser_flag
+     * @param flag_value
+     * @return 1 - value updated, -1 - database error
+     */
+    public int set_newusercreationflag(int flag_value){
+        String query = "UPDATE NOTEIT_HEALTH SET noteit_newuser_flag = ?;";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setInt(1,flag_value);
+            ppst.execute();
+            NoteitApplication.log.add("HEALTH-CR-FLAG-UPDATE","Updated user creation flag to: "+flag_value);
+            return 1;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("HEALTH-CR-FLAG-UPDATE-FAILED","Failed to update health creation user flag ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
      * Function for getting mail data from database
      * @return ArrayList collection of mail server information
      */
