@@ -12,6 +12,7 @@ import com.jakubwawak.maintanance.NoteIT_User;
 import com.jakubwawak.maintanance.Password_Validator;
 import com.jakubwawak.maintanance.RandomString;
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.Note;
 import com.jakubwawak.support_objects.StringElement;
 import org.springframework.mail.MailSender;
 
@@ -267,7 +268,6 @@ public class Database_NoteITUser {
             NoteitApplication.log.add("CONFIRM-EMAIL-FAILED","Failed to confirm email ("+e.toString()+")");
             return -1;
         }
-
     }
 
 
@@ -339,7 +339,7 @@ public class Database_NoteITUser {
 
     /**
      * Function for getting list of users
-     * @return ArrayList collection of StringElements containing
+     * @return ArrayList collection of StringElements containing user data
      */
     public ArrayList<StringElement> get_list_of_users(){
         String query = "SELECT * FROM NOTEIT_USER;";
@@ -355,6 +355,75 @@ public class Database_NoteITUser {
             NoteitApplication.log.add("GET-USER-LIST-FAILED","Failed to get list of users ("+e.toString()+")");
         }
         return data;
+    }
+
+    /**
+     * Function for loading unactive users
+     * @return ArrayList collection of StringElements containing user data
+     */
+    public ArrayList<StringElement> get_list_of_unactive_users(){
+        String query = "SELECT * FROM NOTEIT_USER where noteit_user_active = 0;";
+        ArrayList<StringElement> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add(new StringElement(rs.getInt("noteit_user_id")+":"+rs.getString("noteit_user_email")));
+            }
+            NoteitApplication.log.add("GET-USER-LIST","Loaded list of users (size:"+data.size()+")");
+        }catch(SQLException e){
+            NoteitApplication.log.add("GET-USER-LIST-FAILED","Failed to get list of users ("+e.toString()+")");
+        }
+        return data;
+    }
+
+    /**
+     * Function for enabling user on database
+     * @param noteit_user_id
+     * @return 1 - user enabled, -1 - database error
+     */
+    public int enable_noteit_user(int noteit_user_id){
+        String query = "UPDATE NOTEIT_USER SET noteit_user_active = 1 WHERE noteit_user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.execute();
+            NoteitApplication.log.add("USER-ENABLE","Enabled user account ("+noteit_user_id+")");
+            return 1;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("USER-ENABLE-FAILED","Failed to enable user account ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for disabling user on database
+     * @param noteit_user_id
+     * @return 1 - user disabled, -1 database error
+     */
+    public int disable_noteit_user(int noteit_user_id){
+        String query = "UPDATE NOTEIT_USER SET noteit_user_active = 1 WHERE noteit_user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.execute();
+            NoteitApplication.log.add("USER-ENABLE","Enabled user account ("+noteit_user_id+")");
+            return 1;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("USER-ENABLE-FAILED","Failed to enable user account ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for checking if user is active on database
+     * @param noteit_user_id
+     * @return value of field noteit_user_active or -1 if database error
+     */
+    public int check_user_active_status(int noteit_user_id){
+        String query = "SELECT noteit_user_active from NOTEIT_USER WHERE noteit_user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,)
+        }
     }
 
 
@@ -386,6 +455,28 @@ public class Database_NoteITUser {
         }catch(SQLException e){
             NoteitApplication.log.add("ACCCODE-FAILED","Failed to create user code ("+e.toString()+")");
             return -1;
+        }
+    }
+
+    /**
+     * Function for resseting user password
+     * @param noteit_user_id
+     * @return String
+     */
+    public String resetuserpassword(int noteit_user_id){
+        String query = "UPDATE NOTEIT_USER SET noteit_user_password = ? WHERE noteit_user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            RandomString rs = new RandomString(10);
+            Password_Validator pv = new Password_Validator(rs.buf);
+            ppst.setString(1,pv.hash());
+            ppst.setInt(2,noteit_user_id);
+            ppst.execute();
+            NoteitApplication.log.add("PASSWORD-RESET","Set new passsword for user: ("+noteit_user_id+")");
+            return rs.buf;
+        }catch(Exception ex){
+            NoteitApplication.log.add("PASSWORD-RESET-FAILED","Failed to reset password ("+ex.toString()+")");
+            return "";
         }
     }
 

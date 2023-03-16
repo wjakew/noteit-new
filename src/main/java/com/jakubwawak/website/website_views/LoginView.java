@@ -181,6 +181,11 @@ public class LoginView extends VerticalLayout {
                     Notification.show("Database error! Check server log!");
                     break;
                 }
+                default:
+                {
+                    Notification.show("Wrong login or password!");
+                    break;
+                }
             }
         }
         else{

@@ -11,6 +11,7 @@ package com.jakubwawak.website.website_views;
  */
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.website.website_layouts.MainLayout;
+import com.jakubwawak.website.webview_components.AdminUserManagerDialog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -20,6 +21,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 /**
  * Template view for noteIT application
@@ -32,6 +34,7 @@ public class ManageServerView extends VerticalLayout {
     public VerticalLayout left_layout,center_layout,right_layout;
 
     Button enablenewusers_button;
+    Button adminusermanager_button;
 
     /**
      * Constructor
@@ -50,7 +53,11 @@ public class ManageServerView extends VerticalLayout {
      */
     void create_buttons(){
         enablenewusers_button = new Button("",this::enablenewusers_button_action);
-        enablenewusers_button.setHeight("50px");
+        enablenewusers_button.setHeight("50px");enablenewusers_button.setWidth("150px");
+
+        adminusermanager_button = new Button("User Accout Manager",this::adminusermanager_button_action);
+        adminusermanager_button.setHeight("50px");adminusermanager_button.setWidth("150px");
+
     }
 
     /**
@@ -94,13 +101,14 @@ public class ManageServerView extends VerticalLayout {
      */
     void prepare_view(){
         // left layout
-        left_layout.add(enablenewusers_button);
+        left_layout.add(enablenewusers_button,adminusermanager_button);
 
         // center layout
 
         // right layout
 
         // setting layouts
+        add(new H1("Server Management"));
         main_layout.add(left_layout,center_layout,right_layout);
         add(main_layout);
 
@@ -129,6 +137,11 @@ public class ManageServerView extends VerticalLayout {
                 break;
             }
         }
+    }
+    private void adminusermanager_button_action(ClickEvent e){
+        AdminUserManagerDialog aumd = new AdminUserManagerDialog();
+        add(aumd.main_dialog);
+        aumd.main_dialog.open();
     }
     //----------------end of section
 }
