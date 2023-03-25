@@ -69,11 +69,11 @@ public class AdminUserManagerDialog {
                     StringElement selected = event.getItem();
                     try{
                         int noteit_user_id = Integer.parseInt(selected.getContent().split(":")[0]);
-                        if ( dniu.get_list_of_unactive_users().contains(selected) ){
-                            enableuser_button.setText("Enable User");
+                        if ( dniu.check_user_active_status(noteit_user_id) == 1 ){
+                            enableuser_button.setText("Disable User");
                         }
                         else{
-                            enableuser_button.setText("Disable User");
+                            enableuser_button.setText("Enable User");
                         }
                     }catch(Exception ex){}
                 }
@@ -83,11 +83,12 @@ public class AdminUserManagerDialog {
                 event ->{
                     StringElement selected = event.getItem();
                     try{
-                        if ( dniu.get_list_of_unactive_users().contains(selected) ){
-                            enableuser_button.setText("Enable User");
+                        int noteit_user_id = Integer.parseInt(selected.getContent().split(":")[0]);
+                        if ( dniu.check_user_active_status(noteit_user_id) == 1 ){
+                            enableuser_button.setText("Disable User");
                         }
                         else{
-                            enableuser_button.setText("Disable User");
+                            enableuser_button.setText("Enable User");
                         }
                     }catch(Exception ex){}
                 }
@@ -183,15 +184,25 @@ public class AdminUserManagerDialog {
      */
     private void resetpassword_button_action(ClickEvent e){
         Database_NoteITUser dniu = new Database_NoteITUser(NoteitApplication.database);
-        Set<StringElement> selected_user = request_grid.getSelectedItems();
-        for(StringElement selected : selected_user){
-            try{
-                int noteit_user_id = Integer.parseInt(selected.getContent().split(":")[0]);
-                String query = dniu.resetuserpassword(noteit_user_id);
-                MessageComponent mc = new MessageComponent("Password set: "+query);
-                main_layout.add(mc.main_dialog);
-                mc.main_dialog.open();
-            }catch(Exception ex){}
+        Set<StringElement> selected_user = user_grid.getSelectedItems();
+        if ( selected_user.size() == 0){
+            Notification.show("User is not selected!");
         }
+        else{
+            for(StringElement selected : selected_user){
+                try{
+                    Notification.show("Selected: "+selected.getContent());
+                    int noteit_user_id = Integer.parseInt(selected.getContent().split(":")[0]);
+                    String query = dniu.resetuserpassword(noteit_user_id);
+                    MessageComponent mc = new MessageComponent("Password set: "+query);
+                    main_layout.add(mc.main_dialog);
+                    mc.main_dialog.open();
+                    break;
+                }catch(Exception ex){
+                    Notification.show(ex.toString());
+                }
+            }
+        }
+
     }
 }

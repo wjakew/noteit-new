@@ -3,18 +3,16 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.website.webview_components;
+package com.jakubwawak.website.website_content_objects.note_components;
 
 import com.jakubwawak.database.Database_Note;
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.support_objects.Note;
-import com.jakubwawak.website.website_content_objects.VaultSelector;
-import com.sun.source.doctree.VersionTree;
+import com.jakubwawak.website.website_content_objects.vault_components.VaultSelector;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;

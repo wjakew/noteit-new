@@ -10,10 +10,12 @@ package com.jakubwawak.website.website_views;
  * all rights reserved
  */
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.StringElement;
 import com.jakubwawak.website.website_layouts.MainLayout;
 import com.jakubwawak.website.webview_components.AdminUserManagerDialog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -32,6 +34,8 @@ public class ManageServerView extends VerticalLayout {
 
     public HorizontalLayout main_layout;
     public VerticalLayout left_layout,center_layout,right_layout;
+
+    Grid<StringElement> log_grid;
 
     Button enablenewusers_button;
     Button adminusermanager_button;
@@ -74,6 +78,11 @@ public class ManageServerView extends VerticalLayout {
         else{
             enablenewusers_button.setText("0 : User creation disabled!");
         }
+
+        log_grid = new Grid<>(StringElement.class,false);
+        log_grid.addColumn(StringElement::getContent).setHeader("Log Data");
+        log_grid.setItems(NoteitApplication.database.get_application_log());
+        log_grid.setWidth("450px");log_grid.setHeight("500px");
     }
 
     /**
@@ -101,15 +110,21 @@ public class ManageServerView extends VerticalLayout {
      */
     void prepare_view(){
         // left layout
+        enablenewusers_button.setWidth("150px"); enablenewusers_button.setHeight("75px");
+        adminusermanager_button.setWidth("150px"); adminusermanager_button.setHeight("75px");
         left_layout.add(enablenewusers_button,adminusermanager_button);
-
         // center layout
-
+        center_layout.add(log_grid);
+        center_layout.setSizeFull();
         // right layout
 
         // setting layouts
         add(new H1("Server Management"));
         main_layout.add(left_layout,center_layout,right_layout);
+        main_layout.setSizeFull();
+        main_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        main_layout.getStyle().set("text-align", "center");
+
         add(main_layout);
 
         setSizeFull();

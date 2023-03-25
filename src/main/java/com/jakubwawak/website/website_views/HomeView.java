@@ -7,8 +7,8 @@ package com.jakubwawak.website.website_views;
 
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.website.website_layouts.MainLayout;
-import com.jakubwawak.website.webview_components.CreateNoteDialog;
-import com.jakubwawak.website.webview_components.ModifyVaultComponent;
+import com.jakubwawak.website.website_content_objects.note_components.CreateNoteDialog;
+import com.jakubwawak.website.website_content_objects.vault_components.ModifyVaultComponent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -17,7 +17,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.atmosphere.interceptor.AtmosphereResourceStateRecovery;
 
 @PageTitle("noteIT home")
 @Route(value = "home", layout = MainLayout.class)

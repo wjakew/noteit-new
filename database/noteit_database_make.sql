@@ -64,7 +64,7 @@ CREATE TABLE NOTEIT_TODO -- table for storing to-do objects
     noteit_todo_time TIMESTAMP,
     noteit_todo_deadline TIMESTAMP,
     noteit_todo_desc TEXT,
-    noteit_todo_state INT, -- 1 - to-do done, 0 - to-do not done
+    noteit_todo_state INT, -- 1 - to-do done, 0 - to-do started, -1 - fresh to-do
 
     CONSTRAINT fk_todo1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
 );

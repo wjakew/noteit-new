@@ -6,7 +6,9 @@
 package com.jakubwawak.website.website_layouts;
 
 import com.jakubwawak.noteit.NoteitApplication;
-import com.jakubwawak.website.webview_components.CreateToDoDialog;
+import com.jakubwawak.website.website_content_objects.todo_components.CreateToDoDialog;
+import com.jakubwawak.website.website_content_objects.todo_components.ToDoListDialog;
+import com.jakubwawak.website.website_content_objects.todo_components.ToDoListGrid;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -30,7 +32,7 @@ public class MainLayout extends AppLayout {
      * Constructor
      */
 
-    Button home_button, logout_button, adminpanel_button;
+    Button home_button, logout_button, adminpanel_button, todolist_button;
 
     Button addtodo_button;
     DrawerToggle main_toggle;
@@ -41,6 +43,7 @@ public class MainLayout extends AppLayout {
         logout_button = new Button("Log out!",this::logoutbutton_action);
         addtodo_button = new Button("Add new ToDo",VaadinIcon.PLUS.create(),this::addtodobutton_action);
         adminpanel_button = new Button("Manage Server",VaadinIcon.COMPILE.create(),this::manageserverbutton_action);
+        todolist_button = new Button("Your ToDo List",VaadinIcon.CHECK.create(),this::todolistbutton_action);
         main_toggle = new DrawerToggle();
         this.setDrawerOpened(false);
         createHeader();
@@ -87,6 +90,16 @@ public class MainLayout extends AppLayout {
     }
 
     /**
+     * Function for opening dialog for showing todolist
+     * @param e
+     */
+    private void todolistbutton_action(ClickEvent e){
+        ToDoListDialog tld = new ToDoListDialog();
+        NoteitApplication.main_layout.add(tld.main_dialog);
+        tld.main_dialog.open();
+    }
+
+    /**
      * Function for creating header
      */
     private void createHeader(){
@@ -112,17 +125,19 @@ public class MainLayout extends AppLayout {
      */
     private void createMenu(){
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
-            adminpanel_button.setSizeFull();logout_button.setSizeFull();
-            adminpanel_button.setHeight("50px");logout_button.setHeight("50px");
+            adminpanel_button.setSizeFull();logout_button.setSizeFull();todolist_button.setSizeFull();
+            adminpanel_button.setHeight("50px");logout_button.setHeight("50px");todolist_button.setHeight("50px");
             VerticalLayout vl = new VerticalLayout();
             if ( NoteitApplication.logged.getNoteit_user_role().equals("SUPERUSER")){
                 vl.add(adminpanel_button);
             }
-            vl.add(logout_button);
+            vl.add(todolist_button);
 
+            vl.add(logout_button);
             vl.add(new Text(NoteitApplication.build+"/"+NoteitApplication.version));
             vl.setAlignItems(FlexComponent.Alignment.CENTER);
             addToDrawer(vl);
         }
     }
+
 }

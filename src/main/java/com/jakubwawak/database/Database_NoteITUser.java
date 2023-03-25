@@ -386,6 +386,7 @@ public class Database_NoteITUser {
         String query = "UPDATE NOTEIT_USER SET noteit_user_active = 1 WHERE noteit_user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_user_id);
             ppst.execute();
             NoteitApplication.log.add("USER-ENABLE","Enabled user account ("+noteit_user_id+")");
             return 1;
@@ -404,6 +405,7 @@ public class Database_NoteITUser {
         String query = "UPDATE NOTEIT_USER SET noteit_user_active = 1 WHERE noteit_user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_user_id);
             ppst.execute();
             NoteitApplication.log.add("USER-ENABLE","Enabled user account ("+noteit_user_id+")");
             return 1;
@@ -416,13 +418,21 @@ public class Database_NoteITUser {
     /**
      * Function for checking if user is active on database
      * @param noteit_user_id
-     * @return value of field noteit_user_active or -1 if database error
+     * @return value of field noteit_user_active or -2 if database error, -1 if user not found
      */
     public int check_user_active_status(int noteit_user_id){
         String query = "SELECT noteit_user_active from NOTEIT_USER WHERE noteit_user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
-            ppst.setInt(1,)
+            ppst.setInt(1,noteit_user_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                return rs.getInt("noteit_user_active");
+            }
+            return -1;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("CHECK-ACTIVITY-FAILED","Failed to check user active status ("+ex.toString()+")");
+            return -2;
         }
     }
 

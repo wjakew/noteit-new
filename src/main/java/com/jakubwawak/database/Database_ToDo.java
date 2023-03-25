@@ -11,6 +11,7 @@ import com.jakubwawak.support_objects.ToDo;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Object for maintaining to-do objects on database
@@ -25,6 +26,47 @@ public class Database_ToDo {
      */
     public Database_ToDo(Database_Connector database){
         this.database = database;
+    }
+
+    /**
+     * Function for getting all to-do object from database for given user
+     * @param noteit_user_id
+     * @return collection of user To-Do objects
+     */
+    public ArrayList<ToDo> get_list_todo_active(int noteit_user_id){
+        String query = "SELECT * FROM NOTEIT_TODO WHERE noteit_user_id = ? and noteit_todo_state = -1;";
+        ArrayList<ToDo> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_user_id);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add(new ToDo(rs));
+            }
+            NoteitApplication.log.add("GET-TODO","Loaded "+data.size()+" ToDo objects from database");
+        }catch(SQLException ex){
+            NoteitApplication.log.add("GET-TODO-FAILED","Failed to get ToDo objects from database ("+ ex.toString()+")");
+        }
+        return data;
+    }
+
+    /**
+     * Function for setting to-do object inactive
+     * @param noteit_todo_id
+     * @return Integer
+     */
+    public int set_todo_inactive(int noteit_todo_id){
+        String query = "UPDATE NOTEIT_TODO SET noteit_todo_state = 1 WHERE noteit_todo_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_todo_id);
+            ppst.execute();
+            NoteitApplication.log.add("TODO-INACTIVE-UPDATE","Updated todo! (ID"+noteit_todo_id+")");
+            return 1;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("TODO-INACTIVE-UPDATE-FAILED","Failed to update todo state ("+ex.toString()+")");
+            return -1;
+        }
     }
 
     /**

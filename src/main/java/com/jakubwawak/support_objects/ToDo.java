@@ -90,4 +90,12 @@ public class ToDo {
             new ToDo();
         }
     }
+
+    public int getNoteit_todo_id(){
+        return noteit_todo_id;
+    }
+
+    public String getNoteit_todo_desc() {
+        return noteit_todo_desc;
+    }
 }

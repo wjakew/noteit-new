@@ -7,6 +7,7 @@ package com.jakubwawak.database;
 
 import com.jakubwawak.maintanance.Configuration;
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.StringElement;
 
 import javax.print.DocFlavor;
 import java.sql.*;
@@ -109,6 +110,28 @@ public class Database_Connector {
             NoteitApplication.log.add("HEALTH-CR-FLAG-UPDATE-FAILED","Failed to update health creation user flag ("+ex.toString()+")");
             return -1;
         }
+    }
+
+    /**
+     * Function for loading log data
+     * @return collection of StringElement object containing log data
+     */
+    public ArrayList<StringElement> get_application_log(){
+        String query = "SELECT * FROM NOTEIT_APPLOG;";
+        ArrayList<StringElement> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add(new StringElement(rs.getObject("noteit_log_time",LocalDateTime.class).toString()
+                        +": "+rs.getString("noteit_log_code")+" : "+rs.getString("noteit_log_desc")));
+            }
+            NoteitApplication.log.add("LOG-LOADER","Loaded "+data.size()+" lines of log!");
+        }catch(SQLException ex){
+            NoteitApplication.log.add("LOG-LOADER-FAILED","Failed to load log from server ("+ex.toString()+")");
+        }
+
+        return data;
     }
 
     /**

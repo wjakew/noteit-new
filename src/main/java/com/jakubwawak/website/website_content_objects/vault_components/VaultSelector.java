@@ -3,7 +3,7 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.website.website_content_objects;
+package com.jakubwawak.website.website_content_objects.vault_components;
 
 import com.jakubwawak.database.Database_Vault;
 import com.jakubwawak.noteit.NoteitApplication;
