@@ -25,7 +25,7 @@ public class ToDoListDialog {
     VerticalLayout main_layout;
     ToDoListGrid toDoListGrid;
 
-    Button markasdone_button, createnew_button, showdata_button;
+    Button markasdone_button, createnew_button, showdata_button,reload_button, source_button;
 
     /**
      * Constructor
@@ -37,6 +37,8 @@ public class ToDoListDialog {
         markasdone_button = new Button("Mark as done", VaadinIcon.CHECK.create(),this::markasdonebutton_action);
         createnew_button = new Button("Create new",VaadinIcon.PLUS.create(),this::createnewbutton_action);
         showdata_button = new Button(VaadinIcon.MAGIC.create());
+        source_button = new Button("Current",this::setsource_action);
+        reload_button = new Button(VaadinIcon.REFRESH.create(),this::reloadbutton_action);
         prepare_dialog();
     }
 
@@ -45,7 +47,8 @@ public class ToDoListDialog {
      */
     void prepare_dialog(){
         main_layout.add(new H3("Your ToDo List"));
-        main_layout.add(new HorizontalLayout(toDoListGrid.grid_searchbox_field,showdata_button));
+        main_layout.add(source_button);
+        main_layout.add(new HorizontalLayout(toDoListGrid.grid_searchbox_field,showdata_button,reload_button));
         main_layout.add(toDoListGrid.grid);
         main_layout.add(new HorizontalLayout(createnew_button,markasdone_button));
         main_layout.setSizeFull();
@@ -62,19 +65,73 @@ public class ToDoListDialog {
     private void markasdonebutton_action(ClickEvent e){
         Database_ToDo dtd = new Database_ToDo(NoteitApplication.database);
         int noteit_todo_id = toDoListGrid.get_selected_object_id();
-        if ( noteit_todo_id > 0 ){
-            int ans = dtd.set_todo_inactive(noteit_todo_id);
-            if ( ans == 1){
-                Notification.show("ToDo object set to 1!");
+        if ( source_button.getText().equals("Current") ){
+            // setting as done
+            if ( noteit_todo_id > 0 ){
+                int ans = dtd.set_todo_inactive(noteit_todo_id);
+                if ( ans == 1){
+                    Notification.show("ToDo object set to 1!");
+                }
+                else{
+                    Notification.show("Database error, check log");
+                }
             }
             else{
-                Notification.show("Database error, check log");
+                Notification.show("No object selected!");
             }
+            toDoListGrid.add_object();
         }
         else{
-            Notification.show("No object selected!");
+            if ( noteit_todo_id > 0 ){
+                int ans = dtd.set_todo_active(noteit_todo_id);
+                if ( ans == 1){
+                    Notification.show("ToDo object set to 0!");
+                }
+                else{
+                    Notification.show("Database error, check log");
+                }
+            }
+            else{
+                Notification.show("No object selected!");
+            }
+            toDoListGrid.add_object();
         }
-        toDoListGrid.update();
+
+    }
+
+    /**
+     * Function for setting source data on database
+     * @param e
+     */
+    private void setsource_action(ClickEvent e){
+        switch(source_button.getText()){
+            case "Current":
+            {
+                toDoListGrid.mode = 2;
+                toDoListGrid.update();
+                source_button.setText("Archive");
+                markasdone_button.setText("Return to active");
+                createnew_button.setEnabled(false);
+                break;
+            }
+            case "Archive":
+            {
+                toDoListGrid.mode = 1;
+                toDoListGrid.update();
+                source_button.setText("Current");
+                markasdone_button.setText("Mark as done");
+                createnew_button.setEnabled(true);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Function for reloading grid content
+     * @param e
+     */
+    private void reloadbutton_action(ClickEvent e){
+        toDoListGrid.add_object();
     }
 
     /**

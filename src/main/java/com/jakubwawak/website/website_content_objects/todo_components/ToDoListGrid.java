@@ -8,7 +8,6 @@ package com.jakubwawak.website.website_content_objects.todo_components;
 import com.jakubwawak.database.Database_ToDo;
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.support_objects.ToDo;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.icon.Icon;
@@ -29,6 +28,8 @@ public class ToDoListGrid {
 
     ArrayList<ToDo> content;
 
+    int mode; // 1 - standard mode, 0 - archive mode
+
     /**
      * Constructor
      * @param noteit_user_id
@@ -39,6 +40,7 @@ public class ToDoListGrid {
         grid_searchbox_field = new TextField();
         grid_searchbox_field.setPlaceholder("Search Your todos..");
         content = null;
+        mode = 1; // setting standard mode
         prepare_components();
     }
 
@@ -47,10 +49,14 @@ public class ToDoListGrid {
      */
     void prepare_components(){
         Database_ToDo dtd = new Database_ToDo(NoteitApplication.database);
-        content = dtd.get_list_todo_active(NoteitApplication.logged.getNoteit_user_id());
-        grid.addColumn(ToDo::getNoteit_todo_id).setHeader("ToDo ID");
+        if ( mode == 1 ){
+            content = dtd.get_list_todo_active(NoteitApplication.logged.getNoteit_user_id());
+        }
+        else{
+            content = dtd.get_list_todo_archive(NoteitApplication.logged.getNoteit_user_id());
+        }
+        grid.addColumn(ToDo::getNoteit_todo_id).setHeader("ToDo ID").setWidth("40px");
         grid.addColumn(ToDo::getNoteit_todo_desc).setHeader("Description");
-        grid.setItems(content);
         GridListDataView<ToDo> dataView = grid.setItems(content);
         grid_searchbox_field.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
         grid_searchbox_field.setValueChangeMode(ValueChangeMode.EAGER);
@@ -63,11 +69,9 @@ public class ToDoListGrid {
                 if (searchTerm.isEmpty())
                     return true;
 
-                boolean matchesFullName = todo_obj.getNoteit_todo_desc().contains(
-                        searchTerm);
-                boolean matchesEmail = todo_obj.getNoteit_todo_id() == Integer.parseInt(searchTerm);
+                boolean matchesdata = todo_obj.noteit_todo_desc.contains(searchTerm);
 
-                return matchesFullName || matchesEmail;
+                return matchesdata;
             }catch(Exception ex){
                 return false;
             }
@@ -78,9 +82,35 @@ public class ToDoListGrid {
      * Function for updating grid component
      */
     public void update(){
-        Database_ToDo dtd = new Database_ToDo(NoteitApplication.database);
-        content = dtd.get_list_todo_active(NoteitApplication.logged.getNoteit_user_id());
         grid.getDataProvider().refreshAll();
+    }
+
+    /**
+     * Function for removing object
+     * @param object
+     */
+    public void remove_object(ToDo object){
+        content.remove(object);
+        update();
+    }
+
+    /**
+     * Function for adding object
+     */
+    public void add_object(){
+        Database_ToDo dtd = new Database_ToDo(NoteitApplication.database);
+        ArrayList<ToDo> actual_list;
+        if ( mode == 1 ){
+            actual_list = dtd.get_list_todo_active(NoteitApplication.logged.getNoteit_user_id());
+        }
+        else{
+            actual_list = dtd.get_list_todo_archive(NoteitApplication.logged.getNoteit_user_id());
+        }
+        content.clear();
+        for(ToDo object : actual_list){
+            content.add(object);
+        }
+        update();
     }
 
     /**
