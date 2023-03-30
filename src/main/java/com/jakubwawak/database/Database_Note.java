@@ -9,7 +9,9 @@ import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.support_objects.Note;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Object for managing notes on database
@@ -70,5 +72,26 @@ public class Database_Note {
             NoteitApplication.log.add("NOTE-UPDATE-FAILED","Failed to update note to database ("+ex.toString()+")");
             return -1;
         }
+    }
+
+    /**
+     * Function for loading collection of all notes in vault
+     * @param noteit_vault_id
+     * @return
+     */
+    public ArrayList<Note> get_note_list(int noteit_vault_id){
+        String query = "SELECT * FROM NOTEIT WHERE noteit_vault_id = ?;";
+        ArrayList<Note> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_vault_id);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add(new Note(rs));
+            }
+        }catch(SQLException e){
+            NoteitApplication.log.add("NOTEIT-LIST-FAILED","Failed to load note list ("+e.toString()+")");
+        }
+        return data;
     }
 }

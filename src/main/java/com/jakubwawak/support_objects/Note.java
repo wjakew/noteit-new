@@ -87,4 +87,17 @@ public class Note implements Serializable {
             error = true;
         }
     }
+
+    public int getNoteit_object_id() {
+        return noteit_object_id;
+    }
+    public String getNoteit_object_title(){
+        return noteit_object_title;
+    }
+    public String getNoteit_object_rawtext(){
+        if ( noteit_object_rawtext.length() > 20 ){
+            return noteit_object_rawtext.substring(0,20);
+        }
+        return noteit_object_rawtext;
+    }
 }
