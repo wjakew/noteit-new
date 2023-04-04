@@ -108,7 +108,7 @@ public class ToDoListDialog {
             case "Current":
             {
                 toDoListGrid.mode = 2;
-                toDoListGrid.update();
+                toDoListGrid.add_object();
                 source_button.setText("Archive");
                 markasdone_button.setText("Return to active");
                 createnew_button.setEnabled(false);
@@ -117,7 +117,7 @@ public class ToDoListDialog {
             case "Archive":
             {
                 toDoListGrid.mode = 1;
-                toDoListGrid.update();
+                toDoListGrid.add_object();
                 source_button.setText("Current");
                 markasdone_button.setText("Mark as done");
                 createnew_button.setEnabled(true);

@@ -63,10 +63,12 @@ public class Database_Vault {
      * @return ArrayList collection
      */
     public ArrayList<Vault> get_vaults(){
-        String query = "SELECT * FROM NOTEIT_VAULT;";
+        String query = "SELECT * FROM NOTEIT_VAULT WHERE noteit_user_id = ? OR noteit_vault_members LIKE '%,"
+                +NoteitApplication.logged.getNoteit_user_id()+",%' OR noteit_vault_members LIKE '%+"+NoteitApplication.logged.getNoteit_user_id()+"%';";
         ArrayList<Vault> data = new ArrayList<>();
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,NoteitApplication.logged.getNoteit_user_id());
             ResultSet rs = ppst.executeQuery();
             while(rs.next()){
                 if ( rs.getInt("noteit_user_id") == NoteitApplication.logged.getNoteit_user_id() || rs.getString("noteit_vault_members").contains(NoteitApplication.logged.getNoteit_user_id()+",")){

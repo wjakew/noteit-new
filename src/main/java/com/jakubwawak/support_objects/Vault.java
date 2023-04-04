@@ -88,6 +88,10 @@ public class Vault {
         }
     }
 
+    public int getNoteit_vault_id(){return noteit_vault_id;}
+
+    public String getNoteit_vault_name(){return noteit_vault_name;}
+
     /**
      * Function for returning naming glance for web components
      * @return String
