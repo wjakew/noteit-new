@@ -9,6 +9,7 @@ import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.website.website_content_objects.todo_components.CreateToDoDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.ToDoListDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.ToDoListGrid;
+import com.jakubwawak.website.website_content_objects.vault_components.VaultListDialog;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -32,7 +33,7 @@ public class MainLayout extends AppLayout {
      * Constructor
      */
 
-    Button home_button, logout_button, adminpanel_button, todolist_button;
+    Button home_button, logout_button, adminpanel_button, todolist_button, vaultlist_button;
 
     Button addtodo_button;
     DrawerToggle main_toggle;
@@ -44,10 +45,21 @@ public class MainLayout extends AppLayout {
         addtodo_button = new Button("Add new ToDo",VaadinIcon.PLUS.create(),this::addtodobutton_action);
         adminpanel_button = new Button("Manage Server",VaadinIcon.COMPILE.create(),this::manageserverbutton_action);
         todolist_button = new Button("Your ToDo List",VaadinIcon.CHECK.create(),this::todolistbutton_action);
+        vaultlist_button = new Button("Your Vaults",VaadinIcon.BOOK.create(),this::vaultistbutton_action);
         main_toggle = new DrawerToggle();
         this.setDrawerOpened(false);
         createHeader();
         createMenu();
+    }
+
+    /**
+     * Function for opening vault list
+     * @param e
+     */
+    private void vaultistbutton_action(ClickEvent e){
+        VaultListDialog vld = new VaultListDialog();
+        NoteitApplication.main_layout.add(vld.main_dialog);
+        vld.main_dialog.open();
     }
 
     /**
@@ -125,12 +137,13 @@ public class MainLayout extends AppLayout {
      */
     private void createMenu(){
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
-            adminpanel_button.setSizeFull();logout_button.setSizeFull();todolist_button.setSizeFull();
-            adminpanel_button.setHeight("50px");logout_button.setHeight("50px");todolist_button.setHeight("50px");
+            adminpanel_button.setSizeFull();logout_button.setSizeFull();todolist_button.setSizeFull();vaultlist_button.setSizeFull();
+            adminpanel_button.setHeight("50px");logout_button.setHeight("50px");todolist_button.setHeight("50px");vaultlist_button.setHeight("50px");
             VerticalLayout vl = new VerticalLayout();
             if ( NoteitApplication.logged.getNoteit_user_role().equals("SUPERUSER")){
                 vl.add(adminpanel_button);
             }
+            vl.add(vaultlist_button);
             vl.add(todolist_button);
 
             vl.add(logout_button);
