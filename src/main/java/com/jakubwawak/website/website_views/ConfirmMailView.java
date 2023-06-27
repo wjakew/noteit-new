@@ -59,6 +59,7 @@ public class ConfirmMailView extends VerticalLayout {
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         getStyle().set("text-align", "center");
+        getStyle().set("background-color","#000000");
     }
 
     /**

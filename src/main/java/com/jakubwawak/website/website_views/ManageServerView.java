@@ -82,7 +82,9 @@ public class ManageServerView extends VerticalLayout {
         log_grid = new Grid<>(StringElement.class,false);
         log_grid.addColumn(StringElement::getContent).setHeader("Log Data");
         log_grid.setItems(NoteitApplication.database.get_application_log());
-        log_grid.setWidth("450px");log_grid.setHeight("500px");
+        log_grid.setWidth("650px");log_grid.setHeight("500px");
+
+        left_layout.setSizeFull();center_layout.setSizeFull();right_layout.setSizeFull();
     }
 
     /**
@@ -110,17 +112,19 @@ public class ManageServerView extends VerticalLayout {
      */
     void prepare_view(){
         // left layout
-        enablenewusers_button.setWidth("150px"); enablenewusers_button.setHeight("75px");
-        adminusermanager_button.setWidth("150px"); adminusermanager_button.setHeight("75px");
+        enablenewusers_button.setSizeFull();adminusermanager_button.setSizeFull();
+        enablenewusers_button.setHeight("90px");adminusermanager_button.setHeight("90px");
         left_layout.add(enablenewusers_button,adminusermanager_button);
         // center layout
-        center_layout.add(log_grid);
         center_layout.setSizeFull();
         // right layout
+        right_layout.setSizeFull();
+        right_layout.add(log_grid);
 
         // setting layouts
         add(new H1("Server Management"));
         main_layout.add(left_layout,center_layout,right_layout);
+
         main_layout.setSizeFull();
         main_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         main_layout.getStyle().set("text-align", "center");
@@ -131,6 +135,7 @@ public class ManageServerView extends VerticalLayout {
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         getStyle().set("text-align", "center");
+        getStyle().set("background-color","#000000");
     }
 
 

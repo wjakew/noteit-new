@@ -15,10 +15,12 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -48,6 +50,9 @@ public class MainLayout extends AppLayout {
         vaultlist_button = new Button("Your Vaults",VaadinIcon.BOOK.create(),this::vaultistbutton_action);
         main_toggle = new DrawerToggle();
         this.setDrawerOpened(false);
+
+        logout_button.addThemeVariants(ButtonVariant.LUMO_ERROR,ButtonVariant.LUMO_PRIMARY);
+        home_button.addThemeVariants(ButtonVariant.LUMO_CONTRAST,ButtonVariant.LUMO_PRIMARY);
         createHeader();
         createMenu();
     }
@@ -115,8 +120,30 @@ public class MainLayout extends AppLayout {
      * Function for creating header
      */
     private void createHeader(){
+        FlexLayout center_layout = new FlexLayout();
+        center_layout.setSizeFull();
+        center_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        center_layout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        FlexLayout left_layout = new FlexLayout();
+        left_layout.setSizeFull();
+        left_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        left_layout.setAlignItems(FlexComponent.Alignment.START);
+
+        FlexLayout right_layout = new FlexLayout();
+        right_layout.setSizeFull();
+        right_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        right_layout.setAlignItems(FlexComponent.Alignment.END);
+
+        left_layout.add(main_toggle,home_button);
+
+        center_layout.add(addtodo_button);
+
+        right_layout.add(logout_button);
+
+
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
-            HorizontalLayout header = new HorizontalLayout(main_toggle,home_button,addtodo_button);
+            HorizontalLayout header = new HorizontalLayout(left_layout,center_layout,right_layout);
             header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
             header.setWidth("100%");
             header.addClassNames("py-0", "px-m");
@@ -140,15 +167,23 @@ public class MainLayout extends AppLayout {
             adminpanel_button.setSizeFull();logout_button.setSizeFull();todolist_button.setSizeFull();vaultlist_button.setSizeFull();
             adminpanel_button.setHeight("50px");logout_button.setHeight("50px");todolist_button.setHeight("50px");vaultlist_button.setHeight("50px");
             VerticalLayout vl = new VerticalLayout();
+
+            vl.setSizeFull();
+            vl.setSpacing(true);
+            vl.getThemeList().add("spacing-xl");
+            vl.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+            vl.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+            vl.getStyle().set("text-align", "center");
+
+            vl.getStyle().set("background-color","#000000");
+
             if ( NoteitApplication.logged.getNoteit_user_role().equals("SUPERUSER")){
                 vl.add(adminpanel_button);
             }
             vl.add(vaultlist_button);
             vl.add(todolist_button);
 
-            vl.add(logout_button);
             vl.add(new Text(NoteitApplication.build+"/"+NoteitApplication.version));
-            vl.setAlignItems(FlexComponent.Alignment.CENTER);
             addToDrawer(vl);
         }
     }

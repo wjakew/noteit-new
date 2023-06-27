@@ -67,8 +67,6 @@ public class VaultListGrid {
         });
         grid_searchbox_field.setWidth("200px");
         grid.setSizeFull();
-        grid.setWidth("200px");grid.setHeight("300px");
+        grid.setWidth("500px");grid.setHeight("300px");
     }
-
-
 }

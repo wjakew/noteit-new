@@ -34,6 +34,7 @@ public class TemplateView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+        getStyle().set("background-color","#000000");
     }
 
     /**

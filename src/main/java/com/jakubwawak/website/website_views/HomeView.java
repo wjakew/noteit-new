@@ -5,7 +5,9 @@
  */
 package com.jakubwawak.website.website_views;
 
+import com.jakubwawak.database.Database_Vault;
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.website.website_content_objects.MessageComponent;
 import com.jakubwawak.website.website_layouts.MainLayout;
 import com.jakubwawak.website.website_content_objects.note_components.CreateNoteDialog;
 import com.jakubwawak.website.website_content_objects.vault_components.ModifyVaultComponent;
@@ -17,6 +19,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import javax.management.Notification;
 
 @PageTitle("noteIT home")
 @Route(value = "home", layout = MainLayout.class)
@@ -34,6 +38,7 @@ public class HomeView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+        getStyle().set("background-color","#000000");
     }
 
     /**
@@ -79,8 +84,16 @@ public class HomeView extends VerticalLayout {
     }
     private void createnote_action(ClickEvent e){
         CreateNoteDialog cnd = new CreateNoteDialog(0);
-        add(cnd.main_dialog);
-        cnd.main_dialog.open();
+        Database_Vault dv = new Database_Vault(NoteitApplication.database);
+        if ( dv.get_vaults().size() == 0 ){
+            MessageComponent mc = new MessageComponent("No active vaults!");
+            add(mc.main_dialog);
+            mc.main_dialog.open();
+        }
+        else{
+            add(cnd.main_dialog);
+            cnd.main_dialog.open();
+        }
     }
     //----------------end of section
 }

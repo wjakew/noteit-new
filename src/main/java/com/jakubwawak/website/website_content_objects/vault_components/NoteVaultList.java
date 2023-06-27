@@ -41,6 +41,7 @@ public class NoteVaultList {
         content_grid.addColumn(Note::getNoteit_object_title).setHeader("Note Title");
         content_grid.addColumn(Note::getNoteit_object_rawtext).setHeader("Content");
         content_grid.setItems(dn.get_note_list(noteit_vault_id));
+        content_grid.setSizeFull();content_grid.setWidth("400px");
     }
 
 }
