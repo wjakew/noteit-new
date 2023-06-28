@@ -17,6 +17,7 @@ import com.jakubwawak.website.website_content_objects.note_components.CreateNote
 import com.jakubwawak.website.website_content_objects.note_components.ImportNoteDialog;
 import com.jakubwawak.website.website_content_objects.note_components.NoteListGrid;
 import com.jakubwawak.website.website_content_objects.note_components.ShareNoteDialog;
+import com.jakubwawak.website.website_content_objects.vault_components.VaultDetailsComponent;
 import com.jakubwawak.website.website_layouts.MainLayout;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
@@ -63,7 +64,7 @@ public class VaultListView extends VerticalLayout {
         refresh_button = new Button("Refresh Vault",VaadinIcon.REFRESH.create(),this::refreshnote_action);
         share_button = new Button("Share",VaadinIcon.SHARE.create(),this::share_action);
         importexport_button = new Button("Import",VaadinIcon.DOWNLOAD.create(),this::import_action);
-        information_button = new Button("Details",VaadinIcon.INFO.create());
+        information_button = new Button("Details",VaadinIcon.INFO.create(),this::details_action);
     }
 
     /**
@@ -148,7 +149,12 @@ public class VaultListView extends VerticalLayout {
         ImportNoteDialog ind = new ImportNoteDialog(NoteitApplication.noteit_vault_id);
         add(ind.main_dialog);
         ind.main_dialog.open();
+    }
 
+    private void details_action(ClickEvent ex){
+        VaultDetailsComponent vdc = new VaultDetailsComponent(NoteitApplication.noteit_vault_id);
+        add(vdc.main_dialog);
+        vdc.main_dialog.open();
     }
     //----------------end of section
 }

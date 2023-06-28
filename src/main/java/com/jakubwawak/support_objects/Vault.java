@@ -34,6 +34,7 @@ public class Vault {
     public String noteit_vault_name;
 
     public ArrayList<String> noteit_vault_members;
+    public int noteit_user_id;
     public boolean error;
 
     public Vault(){
@@ -52,6 +53,7 @@ public class Vault {
             noteit_vault_members = new ArrayList<>();
             noteit_vault_id = to_add.getInt("noteid_vault_id");
             noteit_vault_name = to_add.getString("noteit_vault_name");
+            this.noteit_user_id = to_add.getInt("noteit_user_id");
             for(String element : to_add.getString("noteit_vault_members").split(",")){
                 try{
                     int noteit_user_id = Integer.parseInt(element);
@@ -86,6 +88,23 @@ public class Vault {
             NoteitApplication.log.add("VAULT-LOAD-FAILED","Failed to get Vault object ("+e.toString()+")");
             error = true;
         }
+    }
+
+    /**
+     * Function for getting owner of vault
+     * @return String
+     */
+    public String get_owner(){
+        Database_NoteITUser dniu = new Database_NoteITUser(NoteitApplication.database);
+        return dniu.getuseremail(noteit_user_id);
+    }
+
+    /**
+     * Function for checking if logged user is owner of object
+     * @return boolean
+     */
+    public boolean is_logged_owner(){
+        return NoteitApplication.logged.getNoteit_user_id() == noteit_user_id;
     }
 
     public int getNoteit_vault_id(){return noteit_vault_id;}

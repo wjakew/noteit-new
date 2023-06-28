@@ -60,6 +60,30 @@ public class Database_Vault {
     }
 
     /**
+     * Function for changing owner of the vault
+     * @param noteit_vault_id
+     * @param noteit_user_id
+     * @return 0 - logged user not owner, 1 - owner changed, -1 - database errors
+     */
+    public int change_owner(int noteit_vault_id, int noteit_user_id){
+        String query = "UPDATE NOTEIT_VAULT SET noteit_user_id = ?;";
+        Vault vault = this.get_vault(noteit_vault_id);
+        if ( vault.is_logged_owner() ){
+            try{
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,noteit_user_id);
+                ppst.execute();
+                NoteitApplication.log.add("VAULT-CHANGE-OWNER","Owner for vault "+noteit_vault_id+" changed to "+noteit_user_id);
+                return 1;
+            }catch(SQLException ex){
+                NoteitApplication.log.add("VAULT-CHANGE-OWNER-FAILED","Failed to change owner ("+ex.toString()+")");
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Function for listing vaults with members
      * @return ArrayList collection
      */
