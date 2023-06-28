@@ -6,6 +6,7 @@
 package com.jakubwawak.database;
 
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.Note;
 import com.jakubwawak.support_objects.Vault;
 
 import java.sql.PreparedStatement;
@@ -45,7 +46,7 @@ public class Database_Vault {
             for(String member_email : members){
                 int nami_user = dniu.getuserid_byemail(member_email);
                 if ( nami_user > 0 ){
-                    noteit_vault_members = noteit_vault_name + nami_user + ",";
+                    noteit_vault_members = noteit_vault_members + nami_user + ",";
                 }
             }
             ppst.setString(3,noteit_vault_members);
@@ -59,27 +60,67 @@ public class Database_Vault {
     }
 
     /**
+     * Function for listing vaults with members
+     * @return ArrayList collection
+     */
+    ArrayList<Vault> get_vaults_member(){
+        String query = "SELECT * FROM NOTEIT_VAULT;";
+        ArrayList<Vault> data =new ArrayList<>();
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                if ( rs.getString("noteit_vault_members").contains(Integer.toString(NoteitApplication.logged.getNoteit_user_id()))){
+                    data.add(new Vault(rs));
+                }
+            }
+        }catch(SQLException ex){
+            NoteitApplication.log.add("VAULTMEMBER-LIST-FAILED","Failed to list member vaults ("+ex.toString()+")");
+        }
+        return data;
+    }
+
+    /**
      * Function for listing all vaults in which logged user is owner or member
      * @return ArrayList collection
      */
     public ArrayList<Vault> get_vaults(){
-        String query = "SELECT * FROM NOTEIT_VAULT WHERE noteit_user_id = ? OR noteit_vault_members LIKE '%,"
-                +NoteitApplication.logged.getNoteit_user_id()+",%' OR noteit_vault_members LIKE '%+"+NoteitApplication.logged.getNoteit_user_id()+"%';";
+        String query = "SELECT * FROM NOTEIT_VAULT WHERE noteit_user_id = ?;";
         ArrayList<Vault> data = new ArrayList<>();
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,NoteitApplication.logged.getNoteit_user_id());
             ResultSet rs = ppst.executeQuery();
             while(rs.next()){
-                if ( rs.getInt("noteit_user_id") == NoteitApplication.logged.getNoteit_user_id() || rs.getString("noteit_vault_members").contains(NoteitApplication.logged.getNoteit_user_id()+",")){
                     data.add(new Vault(rs));
-                }
             }
             NoteitApplication.log.add("VAULT-LIST-LOAD","Loaded "+data.size()+" vaults");
         }catch(SQLException e){
             NoteitApplication.log.add("VAULT-LIST-FAILED","Failed to list vaults ("+e.toString()+")");
         }
+        data.addAll(get_vaults_member());
         return data;
     }
 
+    /**
+     * Function for getting vault
+     * @param noteit_vault_id
+     * @return
+     */
+    public Vault get_vault(int noteit_vault_id){
+        String query = "SELECT * FROM NOTEIT_VAULT where noteid_vault_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_vault_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                NoteitApplication.log.add("VAULT-GET-LOAD","Loaded "+rs.getString("noteit_vault_name"));
+                return new Vault(rs);
+            }
+            return null;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("VAULT-GET-FAILED","Failed to get vault ("+ex.toString()+")");
+            return null;
+        }
+    }
 }

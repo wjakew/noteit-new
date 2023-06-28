@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NoteitApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "noteit-270423REV0";
+	public static String build = "noteit-280423REV0";
 
 	public static int debug = 1;
 	public static int test = 0;
@@ -30,6 +30,8 @@ public class NoteitApplication {
 
 	public static VerticalLayout main_layout;
 
+	public static int noteit_vault_id;
+
 	/**
 	 * Main application function
 	 * @param args
@@ -39,6 +41,7 @@ public class NoteitApplication {
 		user_2fa_code = "";
 		logged = null;
 		main_layout = null;
+		noteit_vault_id = 0;
 		// looking for configuration file
 		Configuration config = new Configuration();
 		log = new NoteIT_Logger();

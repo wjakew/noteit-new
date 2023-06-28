@@ -41,8 +41,8 @@ public class CreateNoteDialog {
     /**
      * Constructor
      */
-    public CreateNoteDialog(int noteit_vault_id){
-        this.noteit_vault_id = noteit_vault_id;
+    public CreateNoteDialog(int noteit_object_id){
+        this.noteit_vault_id = noteit_object_id;
         main_dialog = new Dialog();
         main_layout = new VerticalLayout();
         notecontent_field = new TextArea("Note Content");
@@ -116,6 +116,7 @@ public class CreateNoteDialog {
                         note.noteit_vault_id = noteit_vault_id;
                         note.noteit_object_rawtext = notecontent_field.getValue();
                         note.noteit_object_time = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+                        note.noteit_object_title =  notetitle_field.getValue();
                         int ans = dn.add_note(note);
                         if ( ans == 1 ){
                             main_dialog.close();

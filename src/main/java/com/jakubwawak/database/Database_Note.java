@@ -80,7 +80,7 @@ public class Database_Note {
      * @return
      */
     public ArrayList<Note> get_note_list(int noteit_vault_id){
-        String query = "SELECT * FROM NOTEIT WHERE noteit_vault_id = ?;";
+        String query = "SELECT * FROM NOTEIT_OBJECT WHERE noteit_vault_id = ?;";
         ArrayList<Note> data = new ArrayList<>();
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);

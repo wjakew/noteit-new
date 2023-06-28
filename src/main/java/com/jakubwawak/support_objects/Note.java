@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * Object for representing note
@@ -50,7 +51,7 @@ public class Note implements Serializable {
                 noteit_object_id = to_add.getInt("noteit_object_id");
                 noteit_vault_id = to_add.getInt("noteit_vault_id");
                 noteit_object_title = to_add.getString("noteit_object_title");
-                noteit_object_time = to_add.getObject("noteit_object_title", LocalDateTime.class);
+                noteit_object_time = to_add.getObject("noteit_object_time", LocalDateTime.class);
                 noteit_object_rawtext = to_add.getString("noteit_object_rawtext");
                 error = false;
             }catch(SQLException e){
@@ -86,6 +87,21 @@ public class Note implements Serializable {
             NoteitApplication.log.add("NOTE-LOAD-FAILED","Failed to load note ("+e.toString()+")");
             error = true;
         }
+    }
+
+    /**
+     * Constructor with title and raw_data information
+     * @param title
+     * @param raw_data
+     * @param noteit_vault_id
+     */
+    public Note(String title, String raw_data,int noteit_vault_id){
+        noteit_object_id = 0;
+        this.noteit_vault_id = noteit_vault_id;
+        noteit_object_title = title;
+        noteit_object_time = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        noteit_object_rawtext = raw_data;
+        error = false;
     }
 
     public int getNoteit_object_id() {
