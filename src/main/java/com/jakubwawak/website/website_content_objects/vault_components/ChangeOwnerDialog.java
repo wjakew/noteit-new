@@ -5,12 +5,21 @@
  */
 package com.jakubwawak.website.website_content_objects.vault_components;
 
+import com.jakubwawak.database.Database_Vault;
+import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.StringElement;
+import com.jakubwawak.website.website_content_objects.MessageComponent;
 import com.jakubwawak.website.website_content_objects.user_components.UserMultiSelector;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+
+import java.sql.SQLClientInfoException;
+import java.util.Set;
 
 /**
  * Object for changing owner for vault
@@ -33,7 +42,7 @@ public class ChangeOwnerDialog {
         main_layout = new VerticalLayout();
         ums = new UserMultiSelector();
         this.noteit_vault_id = noteit_vault_id;
-        change_button = new Button("Change Owner");
+        change_button = new Button("Change Owner",this::change_action);
         prepare_dialog();
     }
 
@@ -51,6 +60,24 @@ public class ChangeOwnerDialog {
      * @param ex
      */
     private void change_action(ClickEvent ex){
-
+        try{
+            Set<StringElement> selected = ums.multiSelectComboBox.getSelectedItems();
+            Database_Vault dv = new Database_Vault(NoteitApplication.database);
+            for(StringElement object : selected){
+                int noteit_user_id = Integer.parseInt(object.getContent().split(":")[0]);
+                int ans = dv.change_owner(noteit_vault_id,noteit_user_id);
+                if ( ans == 1 ){
+                    UI.getCurrent().getPage().reload();
+                    Notification.show("Owner changed");
+                    main_dialog.close();
+                }
+                else{
+                    MessageComponent mc = new MessageComponent("Something went wrong.. Check log!");
+                    main_layout.add(mc.main_dialog);
+                    mc.main_dialog.open();
+                }
+                break;
+            }
+        }catch(Exception e){}
     }
 }

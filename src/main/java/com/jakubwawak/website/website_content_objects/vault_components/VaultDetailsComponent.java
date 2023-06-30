@@ -10,6 +10,7 @@ import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.support_objects.StringElement;
 import com.jakubwawak.support_objects.Vault;
 import com.jakubwawak.website.website_content_objects.note_components.NoteListGrid;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -50,7 +51,7 @@ public class VaultDetailsComponent {
         vault = dv.get_vault(noteit_vault_id);
         noteGrid = new NoteListGrid(noteit_vault_id);
 
-        changeowner_button = new Button("Change Owner",VaadinIcon.USER.create());
+        changeowner_button = new Button("Change Owner",VaadinIcon.USER.create(),this::changeowner_action);
 
         delete_button = new Button("Delete", VaadinIcon.TRASH.create());
         delete_button.addThemeVariants(ButtonVariant.LUMO_ERROR,ButtonVariant.LUMO_PRIMARY);
@@ -96,5 +97,15 @@ public class VaultDetailsComponent {
         main_layout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         main_layout.getStyle().set("text-align", "center");
         main_dialog.add(main_layout);
+    }
+
+    /**
+     * Function for action: change owner
+     * @param e
+     */
+    private void changeowner_action(ClickEvent e){
+        ChangeOwnerDialog cod = new ChangeOwnerDialog(vault.noteit_vault_id);
+        main_layout.add(cod.main_dialog);
+        cod.main_dialog.open();
     }
 }

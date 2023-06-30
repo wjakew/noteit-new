@@ -69,4 +69,15 @@ public class VaultListGrid {
         grid.setSizeFull();
         grid.setWidth("500px");grid.setHeight("300px");
     }
+
+    /**
+     * Function for refreshing grid
+     */
+    public void refresh(){
+        Database_Vault dv = new Database_Vault(NoteitApplication.database);
+        content.clear();
+        ArrayList<Vault> list_vaults = dv.get_vaults();
+        content.addAll(list_vaults);
+        grid.getDataProvider().refreshAll();
+    }
 }
