@@ -60,21 +60,6 @@ public class Database_Vault {
     }
 
     /**
-     * Function for removing vault
-     * @param noteit_vault_id
-     * @return noteit_vault_id
-     */
-    public int remove_vault(int noteit_vault_id){
-        String query = "DELETE FROM NOTEIT_OBJECT WHERE noteit_vault_id = ?;";
-        try{
-            PreparedStatement ppst = database.con.prepareStatement(query);
-            ppst.setInt(1,noteit_vault_id);
-            ppst.execute();
-            NoteitApplication.log.add("VAULT-NOTES-REMOVE","Removed notes from vault "+noteit_vault_id);
-        }
-    }
-
-    /**
      * Function for changing owner of the vault
      * @param noteit_vault_id
      * @param noteit_user_id
