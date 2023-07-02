@@ -8,6 +8,7 @@ package com.jakubwawak.support_objects;
 import com.jakubwawak.database.Database_NoteITUser;
 import com.jakubwawak.noteit.NoteitApplication;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Object for storing Vault object data from NOTEIT_VAULT table
  */
-public class Vault {
+public class Vault implements Serializable {
 
     /**
      * CREATE TABLE NOTEIT_VAULT -- table for storing note vaults

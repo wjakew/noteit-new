@@ -108,4 +108,12 @@ public class VaultDetailsComponent {
         main_layout.add(cod.main_dialog);
         cod.main_dialog.open();
     }
+
+    /**
+     * Function for removing vault
+     * @param e
+     */
+    private void removevault_action(ClickEvent e){
+
+    }
 }

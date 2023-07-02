@@ -60,6 +60,49 @@ public class Database_Vault {
     }
 
     /**
+     * Function for removing vault object
+     * @param noteit_vault_id
+     * @return Integer
+     */
+    public int remove_vault(int noteit_vault_id){
+        // remove notes corelated to given vault
+        String query = "DELETE FROM NOTEIT_OBJECT WHERE noteit_vault_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_vault_id);
+            ppst.execute();
+            // notes removed
+            query = "DELETE FORM NOTEIT_VAULT WHERE noteit_vault_id = ?;";
+            ppst = database.con.prepareStatement(query);
+            ppst.execute();
+            NoteitApplication.log.add("VAULT-REMOVE","Removed vault id:"+noteit_vault_id);
+            return 1;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("VAULT-REMOVE-FAILED","Failed to remove vault ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for adding vault blob to database
+     * @param noteit_vault_id
+     * @param noteit_user_id
+     * @return Integer
+     */
+    public int add_vault_blob(int noteit_vault_id,int noteit_user_id){
+        String query = "INSERT INTO BLOB_ARCHIVE (noteit_user_id, noteit_blob_category,noteit_blob)" +
+                "VALUES (?,?,?);";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            Vault vault = new Vault(noteit_vault_id);
+
+        }catch(SQLException ex){
+            NoteitApplication.log.add("BLOB-ADD-FAILED","Failed to add blob data ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+    /**
      * Function for changing owner of the vault
      * @param noteit_vault_id
      * @param noteit_user_id

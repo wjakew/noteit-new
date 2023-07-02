@@ -153,5 +153,14 @@ CREATE TABLE NOTEIT_WELCOMENOTES -- table for storing welcome notes
     noteit_welcomenotes_text TEXT
 );
 
+CREATE TABLE BLOB_ARCHIVE -- table for storing removed objects blob
+(
+    noteit_blob_archive_id INT AUTO_INCREMENT PRIMARY KEY,
+    noteit_user_id INT,
+    noteit_blob_category VARCHAR(100),
+    noteit_blob LONGBLOB
+);
+
+
 INSERT INTO NOTEIT_WELCOMENOTES (noteit_welcomenotes_text) VALUES('You didn’t expect these notes to turn into my therapy session, did you?');
 INSERT INTO NOTEIT_WELCOMENOTES (noteit_welcomenotes_text) VALUES('Gift yourself with a journal for your own notes.');

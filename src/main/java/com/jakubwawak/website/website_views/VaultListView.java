@@ -120,7 +120,6 @@ public class VaultListView extends VerticalLayout {
         add(main_layout);
     }
 
-
     //----------------section for actions and validators
     private void createnewnote_action(ClickEvent ex){
         CreateNoteDialog cnd = new CreateNoteDialog(0);
