@@ -7,8 +7,11 @@ package com.jakubwawak.database;
 
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.support_objects.Note;
+import com.jakubwawak.support_objects.StringElement;
 import com.jakubwawak.support_objects.Vault;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,15 +68,34 @@ public class Database_Vault {
      * @return Integer
      */
     public int remove_vault(int noteit_vault_id){
-        // remove notes corelated to given vault
-        String query = "DELETE FROM NOTEIT_OBJECT WHERE noteit_vault_id = ?;";
+        // adding vault data to blob storage
+        add_vault_blob(noteit_vault_id,NoteitApplication.logged.getNoteit_user_id());
+
+        // add vault notes to blob storage
+        String query = "SELECT * FROM NOTEIT_OBJECT WHERE  noteit_vault_id=?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_vault_id);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+
+                int noteit_object_id = rs.getInt("noteit_object_id");
+                add_note_blob(noteit_object_id,NoteitApplication.logged.getNoteit_user_id());
+            }
+        }catch(SQLException ex){
+            NoteitApplication.log.add("NOTE-VAULT-REMOVE-FAILED","Failed to remove note from vault "+noteit_vault_id+" ("+ex.toString()+")");
+        }
+
+        // remove notes correlated to given vault
+        query = "DELETE FROM NOTEIT_OBJECT WHERE noteit_vault_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,noteit_vault_id);
             ppst.execute();
             // notes removed
-            query = "DELETE FORM NOTEIT_VAULT WHERE noteit_vault_id = ?;";
+            query = "DELETE FROM NOTEIT_VAULT WHERE noteid_vault_id = ?;";
             ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_vault_id);
             ppst.execute();
             NoteitApplication.log.add("VAULT-REMOVE","Removed vault id:"+noteit_vault_id);
             return 1;
@@ -84,19 +106,69 @@ public class Database_Vault {
     }
 
     /**
+     * Function for adding note serialized data to blob
+     * @param noteit_note_id
+     * @param noteit_user_id
+     * @return
+     */
+    public int add_note_blob(int noteit_note_id,int noteit_user_id){
+        byte[] data = null;
+        String query = "INSERT INTO BLOB_ARCHIVE (noteit_user_id, noteit_blob_category,noteit_blob)" +
+                "VALUES (?,?,?);";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            Note note = new Note(noteit_note_id);
+
+            // saving data to bytes
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(note);
+            oos.flush();
+            oos.close();
+            baos.close();
+            data = baos.toByteArray();
+
+            ppst.setInt(1,noteit_user_id);
+            ppst.setString(2,"note");
+            ppst.setObject(3,data);
+            ppst.execute();
+            return 1;
+        }catch(Exception ex){
+            NoteitApplication.log.add("BLOB-ADD-FAILED","Failed to add blob data ("+ex.toString()+")");
+            return -1;
+        }
+    }
+
+
+    /**
      * Function for adding vault blob to database
      * @param noteit_vault_id
      * @param noteit_user_id
      * @return Integer
      */
-    public int add_vault_blob(int noteit_vault_id,int noteit_user_id){
+    public int add_vault_blob(int noteit_vault_id, int noteit_user_id){
+        byte[] data = null;
         String query = "INSERT INTO BLOB_ARCHIVE (noteit_user_id, noteit_blob_category,noteit_blob)" +
                 "VALUES (?,?,?);";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             Vault vault = new Vault(noteit_vault_id);
 
-        }catch(SQLException ex){
+            // saving data to bytes
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(vault);
+            oos.flush();
+            oos.close();
+            baos.close();
+            data = baos.toByteArray();
+
+            ppst.setInt(1,noteit_user_id);
+            ppst.setString(2,"vault");
+            ppst.setObject(3,data);
+            ppst.execute();
+            return 1;
+        }catch(Exception ex){
             NoteitApplication.log.add("BLOB-ADD-FAILED","Failed to add blob data ("+ex.toString()+")");
             return -1;
         }

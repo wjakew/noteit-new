@@ -86,6 +86,31 @@ public class NoteIT_User {
     }
 
     /**
+     * Constuctor with email support
+     * @param noteit_user_email
+     */
+    public NoteIT_User(String noteit_user_email){
+        String query = "SELECT * FROM NOTEIT_USER WHERE noteit_user_email = ?;";
+        this.noteit_user_id = noteit_user_id;
+        try{
+            PreparedStatement ppst = NoteitApplication.database.con.prepareStatement(query);
+            ppst.setString(1, noteit_user_email);
+            ResultSet to_add = ppst.executeQuery();
+            if ( to_add.next() ){
+                noteit_user_name = to_add.getString("noteit_user_name");
+                this.noteit_user_email = to_add.getString("noteit_user_email");
+                noteit_user_surname = to_add.getString("noteit_user_surname");
+                noteit_user_role = to_add.getString("noteit_user_role");
+                twofactor_flag = 0;
+                error = false;
+            }
+        }catch(SQLException e){
+            NoteitApplication.log.add("NOTEITUSER-ERROR","Failed to retrive noteit user data ("+e.toString()+")");
+            error = true;
+        }
+    }
+
+    /**
      * Getter for email
      * @return email field
      */

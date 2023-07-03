@@ -75,7 +75,7 @@ public class Vault implements Serializable {
      */
     public Vault(int noteit_vault_id){
         this.noteit_vault_id = noteit_vault_id;
-        String query = "SELECT * FROM NOTEIT_VAULT where noteit_vault_id = ?;";
+        String query = "SELECT * FROM NOTEIT_VAULT where noteid_vault_id = ?;";
         try{
             PreparedStatement ppst = NoteitApplication.database.con.prepareStatement(query);
             ppst.setInt(1,noteit_vault_id);
