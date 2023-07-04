@@ -7,6 +7,7 @@ package com.jakubwawak.noteit;
 
 import com.jakubwawak.database.Database_Connector;
 import com.jakubwawak.maintanance.*;
+import com.jakubwawak.support_objects.Note;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NoteitApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "noteit-030723REV0";
+	public static String build = "noteit-040723REV0";
 
 	public static int debug = 1;
 	public static int test = 0;
@@ -32,6 +33,9 @@ public class NoteitApplication {
 
 	public static int noteit_vault_id;
 
+	public static Note current_note;
+	public static int current_note_new;
+
 	/**
 	 * Main application function
 	 * @param args
@@ -39,6 +43,8 @@ public class NoteitApplication {
 	public static void main(String[] args) {
 		show_header();
 		user_2fa_code = "";
+		current_note = null;
+		current_note_new = -1;
 		logged = null;
 		main_layout = null;
 		noteit_vault_id = 0;
