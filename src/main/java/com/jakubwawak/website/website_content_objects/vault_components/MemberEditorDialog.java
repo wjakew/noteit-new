@@ -5,6 +5,8 @@
  */
 package com.jakubwawak.website.website_content_objects.vault_components;
 
+import com.jakubwawak.database.Database_Vault;
+import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.support_objects.StringElement;
 import com.jakubwawak.website.website_content_objects.user_components.UserGridSelector;
 import com.vaadin.flow.component.button.Button;
@@ -40,6 +42,7 @@ public class MemberEditorDialog {
      * @param noteit_vault_id
      */
     public MemberEditorDialog(int noteit_vault_id){
+        Database_Vault dv = new Database_Vault(NoteitApplication.database);
         main_dialog = new Dialog();
         main_layout = new VerticalLayout();
         this.noteit_vault_id = noteit_vault_id;
@@ -48,8 +51,10 @@ public class MemberEditorDialog {
 
         user_grid = new UserGridSelector();
 
-        content = new ArrayList<>();
+        content = dv.get_members_of_vault_as_content(noteit_vault_id);
+
         user_selected_grid = new Grid<>(StringElement.class,false);
+
         user_selected_grid.addColumn(StringElement::getContent).setHeader("Users with Privileges");
         user_selected_grid.setSizeFull();user_selected_grid.setWidth("450px");user_selected_grid.setHeight("300px");
         user_selected_grid.setItems(content);
