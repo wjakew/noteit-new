@@ -17,6 +17,7 @@ import java.util.ArrayList;
  */
 public class VaultSelector {
     public ComboBox<Vault> combobox;
+    ArrayList<Vault> content;
 
     /**
      * Constructor
@@ -32,8 +33,21 @@ public class VaultSelector {
     void create_component(){
         Database_Vault dv = new Database_Vault(NoteitApplication.database);
         combobox.setItems(dv.get_vaults());
+        content = dv.get_vaults();
         combobox.setItemLabelGenerator(Vault::get_glance);
         combobox.setAllowCustomValue(false);
+    }
+
+    /**
+     * Function for setting selected value
+     * @param noteit_vault_id
+     */
+    public void set_selected_value(int noteit_vault_id){
+        for(Vault vault : content){
+            if ( vault.noteit_vault_id == noteit_vault_id){
+                combobox.setValue(vault);
+            }
+        }
     }
 
     /**

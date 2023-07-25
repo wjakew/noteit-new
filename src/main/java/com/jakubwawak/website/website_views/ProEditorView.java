@@ -99,6 +99,13 @@ public class ProEditorView extends VerticalLayout {
         notecontent_field.setSizeFull();
         add(notecontent_field);
         add(new HorizontalLayout(create_button));
+
+        if ( note != null ){
+            notecontent_field.setValue(note.noteit_object_rawtext);
+            notetitle_field.setValue(note.noteit_object_title);
+            vaultSelector.set_selected_value(note.noteit_vault_id);
+        }
+
     }
 
 

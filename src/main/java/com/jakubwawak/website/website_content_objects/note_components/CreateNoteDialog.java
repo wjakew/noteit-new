@@ -174,18 +174,16 @@ public class CreateNoteDialog {
         int noteit_vault_id = -1;
         try{
             noteit_vault_id = vaultSelector.combobox.getValue().noteit_vault_id;
-        }catch(Exception e){}
+        }catch(Exception e){Notification.show(e.toString());}
         if ( noteit_vault_id > 0 ){
-            if ( validate_fields() ){
-                note.noteit_vault_id = noteit_vault_id;
-                note.noteit_object_rawtext = notecontent_field.getValue();
-                note.noteit_object_time = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
-                note.noteit_object_title =  notetitle_field.getValue();
-                NoteitApplication.current_note = note;
-                // open pro editor
-                openproeditor_button.getUI().ifPresent(ui ->
-                        ui.navigate("proeditor"));
-            }
+            note.noteit_vault_id = noteit_vault_id;
+            note.noteit_object_rawtext = notecontent_field.getValue();
+            note.noteit_object_time = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+            note.noteit_object_title =  notetitle_field.getValue();
+            NoteitApplication.current_note = note;
+            // open pro editor
+            openproeditor_button.getUI().ifPresent(ui ->
+                    ui.navigate("proeditor"));
         }
         else{
             Notification.show("Vault not set!");
