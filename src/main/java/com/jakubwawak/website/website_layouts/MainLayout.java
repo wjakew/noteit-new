@@ -6,6 +6,7 @@
 package com.jakubwawak.website.website_layouts;
 
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.website.website_content_objects.note_components.CreateNoteDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.CreateToDoDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.ToDoListDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.ToDoListGrid;
@@ -37,7 +38,7 @@ public class MainLayout extends AppLayout {
 
     Button home_button, logout_button, adminpanel_button, todolist_button, vaultlist_button;
 
-    Button addtodo_button;
+    Button addtodo_button,addnote_button;
     DrawerToggle main_toggle;
 
     public MainLayout(){
@@ -45,6 +46,7 @@ public class MainLayout extends AppLayout {
         home_button = new Button("NoteIT",this::homebutton_action);
         logout_button = new Button("Log out!",this::logoutbutton_action);
         addtodo_button = new Button("Add new ToDo",VaadinIcon.PLUS.create(),this::addtodobutton_action);
+        addnote_button = new Button("Add new Note",VaadinIcon.NOTEBOOK.create(),this::addnotebutton_action);
         adminpanel_button = new Button("Manage Server",VaadinIcon.COMPILE.create(),this::manageserverbutton_action);
         todolist_button = new Button("Your ToDo List",VaadinIcon.CHECK.create(),this::todolistbutton_action);
         vaultlist_button = new Button("Your Vaults",VaadinIcon.BOOK.create(),this::vaultistbutton_action);
@@ -107,6 +109,16 @@ public class MainLayout extends AppLayout {
     }
 
     /**
+     * Function for opening dialog for creating new note object
+     * @param e
+     */
+    private void addnotebutton_action(ClickEvent e){
+        CreateNoteDialog cnd = new CreateNoteDialog(0);
+        NoteitApplication.main_layout.add(cnd.main_dialog);
+        cnd.main_dialog.open();
+    }
+
+    /**
      * Function for opening dialog for showing todolist
      * @param e
      */
@@ -137,7 +149,7 @@ public class MainLayout extends AppLayout {
 
         left_layout.add(main_toggle,home_button);
 
-        center_layout.add(addtodo_button);
+        center_layout.add(addtodo_button,addnote_button);
 
         right_layout.add(logout_button);
 

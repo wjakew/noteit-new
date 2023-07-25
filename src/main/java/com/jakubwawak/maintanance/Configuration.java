@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public class Configuration {
 
-    public String database_name,database_user,database_password,database_ip;
+    public String database_name,database_user,database_password,database_ip,database_port;
     public ArrayList<String> raw_lines;
     public int debug_flag;
     public boolean error, newfile;
@@ -32,6 +32,7 @@ public class Configuration {
         database_password = "";
         database_ip = "";
         debug_flag = 0;
+        database_port = "";
         raw_lines = new ArrayList<>();
 
         // checking for file
@@ -56,6 +57,7 @@ public class Configuration {
                 fw.write("#database_user%" + database_user + "\n");
                 fw.write("#database_password%" + database_password + "\n");
                 fw.write("#database_ip%" + database_ip  + "\n");
+                fw.write("#database_port%"+ database_port+"\n");
                 fw.write("#debugflag%" + debug_flag + "\n");
                 fw.close();
                 newfile = true;
@@ -100,6 +102,11 @@ public class Configuration {
                                 debug_flag = Integer.parseInt(line.split("%")[1]);
                                 break;
                             }
+                            case "#database_port":
+                            {
+                                database_port = line.split("%")[1];
+                                break;
+                            }
                         }
                     }
                     line = reader.readLine();
@@ -123,6 +130,7 @@ public class Configuration {
             fw.write("#database_user%" + database_user + "\n");
             fw.write("#database_password%" + database_password + "\n");
             fw.write("#database_ip%" + database_ip  + "\n");
+            fw.write("#database_port%"+ database_port+"\n");
             fw.write("#debugflag%" + debug_flag + "\n");
             fw.close();
             newfile = true;
@@ -144,6 +152,9 @@ public class Configuration {
 
         System.out.print("database_ip:");
         database_ip = sc.nextLine();
+
+        System.out.print("database_port:");
+        database_port = sc.nextLine();
 
         System.out.print("database_name:");
         database_name = sc.nextLine();

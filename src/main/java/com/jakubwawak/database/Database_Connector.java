@@ -7,6 +7,7 @@ package com.jakubwawak.database;
 
 import com.jakubwawak.maintanance.Configuration;
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.Note;
 import com.jakubwawak.support_objects.StringElement;
 
 import javax.print.DocFlavor;
@@ -40,7 +41,9 @@ public class Database_Connector {
      */
     public void connect(){
         try{
-            con = DriverManager.getConnection("jdbc:mysql://"+config.database_ip+":3306/"+config.database_name,config.database_user,config.database_password);
+            con = DriverManager.getConnection("jdbc:mysql://"+config.database_ip+":"+config.database_port+"/"+config.database_name,config.database_user,config.database_password);
+            NoteitApplication.log.add("CON-INFORMATION",con.getMetaData().toString());
+            NoteitApplication.log.add("CON-INFORMATION",con.getMetaData().getDriverVersion());
             stmt = con.createStatement();
             connected = true;
         }catch(Exception e) {

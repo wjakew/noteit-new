@@ -13,6 +13,7 @@ import com.jakubwawak.website.webview_components.CreateAccountDialog;
 import com.jakubwawak.website.webview_components.MessageComponent;
 import com.jakubwawak.website.webview_components.TwoFactorComponent;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
@@ -86,6 +87,11 @@ public class LoginView extends VerticalLayout {
             vl_right.add(login_button);
         }
 
+        password_field.addKeyPressListener(Key.ENTER, e->
+        {
+            login();
+        });
+
         vl_left.setSizeFull();
         vl_left.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         vl_left.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
@@ -125,6 +131,80 @@ public class LoginView extends VerticalLayout {
      * @param e
      */
     private void login_action(ClickEvent e){
+        if ( validate_fields() ){
+            // fields are correct
+            Database_NoteITUser dni = new Database_NoteITUser(NoteitApplication.database);
+            int flag = dni.login_user(email_field.getValue(),password_field.getValue());
+            switch(flag){
+                case 2:
+                {
+                    // login successfull - show 2fa window to confirm
+                    NoteitApplication.logged = new NoteIT_User();
+                    NoteitApplication.logged.twofactor_flag = 1;
+                    TwoFactorComponent tfc = new TwoFactorComponent(NoteitApplication.logged.getNoteit_user_id());
+                    tfc.create_dialog();
+                    add(tfc.main_dialog);
+                    tfc.main_dialog.open();
+                    break;
+                }
+                case 1:
+                {
+                    // login successfull - 2fa is not on - go to home page
+                    //go to home page
+                    login_button.getUI().ifPresent(ui ->
+                            ui.navigate("home"));
+                    break;
+                }
+                case 0:
+                {
+                    // user with given email not found
+                    Notification.show(email_field.getValue()+" not found in database!");
+                    email_field.setValue("");
+                    password_field.setValue("");
+                    break;
+                }
+                case -2:
+                {
+                    // user is not active
+                    MessageComponent mc = new MessageComponent("User is not active.Contact server administrator!");
+                    add(mc.main_dialog);
+                    mc.main_dialog.open();
+                    break;
+                }
+                case -3:
+                {
+                    // user email not confirmed but logged successfully
+                    MessageComponent mc = new MessageComponent("User email is not confirmed! Check your mail.");
+                    add(mc.main_dialog);
+                    mc.main_dialog.open();
+                    // open mail-confirm page!
+                    login_button.getUI().ifPresent(ui ->
+                            ui.navigate("mailconfirm"));
+                    break;
+                }
+                case -4:
+                {
+                    // database error
+                    Notification.show("Database error! Check server log!");
+                    break;
+                }
+                default:
+                {
+                    Notification.show("Wrong login or password!");
+                    break;
+                }
+            }
+        }
+        else{
+            // fields are wrong
+            Notification.show("EMail or Password field are empty!");
+        }
+    }
+
+    /**
+     * Function for logging user
+     */
+    void login(){
         if ( validate_fields() ){
             // fields are correct
             Database_NoteITUser dni = new Database_NoteITUser(NoteitApplication.database);
