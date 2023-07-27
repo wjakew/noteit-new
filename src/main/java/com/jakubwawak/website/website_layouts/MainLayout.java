@@ -37,6 +37,7 @@ public class MainLayout extends AppLayout {
      */
 
     Button home_button, logout_button, adminpanel_button, todolist_button, vaultlist_button;
+    Button proeditor_button;
 
     Button addtodo_button,addnote_button;
     DrawerToggle main_toggle;
@@ -50,6 +51,7 @@ public class MainLayout extends AppLayout {
         adminpanel_button = new Button("Manage Server",VaadinIcon.COMPILE.create(),this::manageserverbutton_action);
         todolist_button = new Button("Your ToDo List",VaadinIcon.CHECK.create(),this::todolistbutton_action);
         vaultlist_button = new Button("Your Vaults",VaadinIcon.BOOK.create(),this::vaultistbutton_action);
+        proeditor_button = new Button("Pro Note Editor",VaadinIcon.PENCIL.create(),this::openproeditorbutton_action);
         main_toggle = new DrawerToggle();
         this.setDrawerOpened(false);
 
@@ -129,6 +131,15 @@ public class MainLayout extends AppLayout {
     }
 
     /**
+     * Function for opening proeditor
+     * @param e
+     */
+    private void openproeditorbutton_action(ClickEvent e){
+        // open pro editor
+        proeditor_button.getUI().ifPresent(ui ->
+                ui.navigate("proeditor"));
+    }
+    /**
      * Function for creating header
      */
     private void createHeader(){
@@ -177,7 +188,9 @@ public class MainLayout extends AppLayout {
     private void createMenu(){
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
             adminpanel_button.setSizeFull();logout_button.setSizeFull();todolist_button.setSizeFull();vaultlist_button.setSizeFull();
+            proeditor_button.setSizeFull();
             adminpanel_button.setHeight("50px");logout_button.setHeight("50px");todolist_button.setHeight("50px");vaultlist_button.setHeight("50px");
+            proeditor_button.setHeight("50px");
             VerticalLayout vl = new VerticalLayout();
 
             vl.setSizeFull();
@@ -194,6 +207,7 @@ public class MainLayout extends AppLayout {
             }
             vl.add(vaultlist_button);
             vl.add(todolist_button);
+            vl.add(proeditor_button);
 
             vl.add(new Text(NoteitApplication.build+"/"+NoteitApplication.version));
             addToDrawer(vl);

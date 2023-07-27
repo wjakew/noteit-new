@@ -97,6 +97,8 @@ public class CreateNoteDialog {
         main_layout.getStyle().set("text-align", "center");
 
         main_dialog.add(main_layout);
+
+        openproeditor_button.setEnabled(false);
     }
 
     /**
@@ -171,7 +173,7 @@ public class CreateNoteDialog {
      * @param ex
      */
     private void gotopro_action(ClickEvent ex){
-        int noteit_vault_id = -1;
+        noteit_vault_id = -1;
         try{
             noteit_vault_id = vaultSelector.combobox.getValue().noteit_vault_id;
         }catch(Exception e){Notification.show(e.toString());}

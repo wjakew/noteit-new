@@ -39,6 +39,7 @@ public class ManageServerView extends VerticalLayout {
 
     Button enablenewusers_button;
     Button adminusermanager_button;
+    Button enable2fa_button;
 
     /**
      * Constructor
@@ -62,6 +63,19 @@ public class ManageServerView extends VerticalLayout {
         adminusermanager_button = new Button("User Accout Manager",this::adminusermanager_button_action);
         adminusermanager_button.setHeight("50px");adminusermanager_button.setWidth("150px");
 
+        enable2fa_button = new Button("",this::enable2fa_button_action);
+        enable2fa_button.setHeight("50px");enable2fa_button.setWidth("150px");
+
+        if(NoteitApplication.database.check_2fa_flag() == 1 ){
+            enable2fa_button.setText("1 : 2FA Enabled");
+        }
+        else if (NoteitApplication.database.check_2fa_flag() == 0){
+            enable2fa_button.setText("0 : 2FA Disabled");
+        }
+        else{
+            enable2fa_button.setText("2FA Error");
+            enable2fa_button.setEnabled(false);
+        }
     }
 
     /**
@@ -114,7 +128,9 @@ public class ManageServerView extends VerticalLayout {
         // left layout
         enablenewusers_button.setSizeFull();adminusermanager_button.setSizeFull();
         enablenewusers_button.setHeight("90px");adminusermanager_button.setHeight("90px");
-        left_layout.add(enablenewusers_button,adminusermanager_button);
+        enable2fa_button.setSizeFull();
+        enable2fa_button.setHeight("90px");
+        left_layout.add(enablenewusers_button,adminusermanager_button,enable2fa_button);
         // center layout
         center_layout.setSizeFull();
         // right layout
@@ -162,6 +178,18 @@ public class ManageServerView extends VerticalLayout {
         AdminUserManagerDialog aumd = new AdminUserManagerDialog();
         add(aumd.main_dialog);
         aumd.main_dialog.open();
+    }
+    private void enable2fa_button_action(ClickEvent e){
+        if ( enable2fa_button.getText().contains("0") ){
+            // enable 2fa
+            NoteitApplication.database.twofactor_settings(1);
+            enable2fa_button.setText("1 : 2FA Enabled");
+        }
+        else{
+            // disable 2fa
+            NoteitApplication.database.twofactor_settings(0);
+            enable2fa_button.setText("0 : 2FA Disabled");
+        }
     }
     //----------------end of section
 }
