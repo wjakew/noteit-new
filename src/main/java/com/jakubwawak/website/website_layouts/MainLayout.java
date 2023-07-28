@@ -7,6 +7,7 @@ package com.jakubwawak.website.website_layouts;
 
 import com.jakubwawak.noteit.NoteitApplication;
 import com.jakubwawak.website.website_content_objects.note_components.CreateNoteDialog;
+import com.jakubwawak.website.website_content_objects.note_components.TextToNoteImportDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.CreateToDoDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.ToDoListDialog;
 import com.jakubwawak.website.website_content_objects.todo_components.ToDoListGrid;
@@ -18,6 +19,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -25,7 +27,13 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.theme.lumo.Lumo;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Main Web Application layout
@@ -38,6 +46,10 @@ public class MainLayout extends AppLayout {
 
     Button home_button, logout_button, adminpanel_button, todolist_button, vaultlist_button;
     Button proeditor_button;
+
+    MultiFileMemoryBuffer buffer1;
+    Upload upload_component;
+    String value;
 
     Button addtodo_button,addnote_button;
     DrawerToggle main_toggle;
@@ -52,8 +64,39 @@ public class MainLayout extends AppLayout {
         todolist_button = new Button("Your ToDo List",VaadinIcon.CHECK.create(),this::todolistbutton_action);
         vaultlist_button = new Button("Your Vaults",VaadinIcon.BOOK.create(),this::vaultistbutton_action);
         proeditor_button = new Button("Pro Note Editor",VaadinIcon.PENCIL.create(),this::openproeditorbutton_action);
+        buffer1 = new MultiFileMemoryBuffer();
+        upload_component = new Upload(buffer1);
+        upload_component.setDropAllowed(true);
         main_toggle = new DrawerToggle();
         this.setDrawerOpened(false);
+
+
+        upload_component.addSucceededListener(event -> {
+            String fileName = event.getFileName();
+            InputStream inputStream = buffer1.getInputStream(fileName);
+            try{
+                InputStreamReader isr = new InputStreamReader(inputStream);
+                BufferedReader bf = new BufferedReader(isr);
+                int lines = 0;
+                while(bf.ready()){
+                    value = value + bf.readLine() + "\n";
+                    lines++;
+                }
+                if ( lines > 0 ){
+                    Notification.show("Loaded "+lines+" lines!");
+                    // open window to upload component
+                    TextToNoteImportDialog ttnid = new TextToNoteImportDialog(value);
+                    NoteitApplication.main_layout.add(ttnid.main_dialog);
+                    ttnid.main_dialog.open();
+                }
+                else{
+                    Notification.show("File is empty!");
+                }
+            }catch(Exception ex){
+                NoteitApplication.log.add("IMPORT-NOTE-FAILED","Failed to import note ("+ex.toString()+")");
+                Notification.show("Failed to import ("+ex.toString()+")");
+            }
+        });
 
         logout_button.addThemeVariants(ButtonVariant.LUMO_ERROR,ButtonVariant.LUMO_PRIMARY);
         home_button.addThemeVariants(ButtonVariant.LUMO_CONTRAST,ButtonVariant.LUMO_PRIMARY);
@@ -188,9 +231,9 @@ public class MainLayout extends AppLayout {
     private void createMenu(){
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
             adminpanel_button.setSizeFull();logout_button.setSizeFull();todolist_button.setSizeFull();vaultlist_button.setSizeFull();
-            proeditor_button.setSizeFull();
+            proeditor_button.setSizeFull(); upload_component.setSizeFull();
             adminpanel_button.setHeight("50px");logout_button.setHeight("50px");todolist_button.setHeight("50px");vaultlist_button.setHeight("50px");
-            proeditor_button.setHeight("50px");
+            proeditor_button.setHeight("50px");upload_component.setHeight("100px");
             VerticalLayout vl = new VerticalLayout();
 
             vl.setSizeFull();
@@ -208,6 +251,8 @@ public class MainLayout extends AppLayout {
             vl.add(vaultlist_button);
             vl.add(todolist_button);
             vl.add(proeditor_button);
+            vl.add(new H6("Drop Zone"));
+            vl.add(upload_component);
 
             vl.add(new Text(NoteitApplication.build+"/"+NoteitApplication.version));
             addToDrawer(vl);

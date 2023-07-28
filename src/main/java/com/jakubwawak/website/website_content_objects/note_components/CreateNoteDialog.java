@@ -21,7 +21,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -36,8 +41,10 @@ public class CreateNoteDialog {
     TextField notetitle_field;
     TextArea notecontent_field;
     Button create_button;
+    MultiFileMemoryBuffer buffer1;
+    Upload upload_component;
 
-    Button openproeditor_button;
+    String value;
 
     int noteit_vault_id;
     Note note;
@@ -53,8 +60,9 @@ public class CreateNoteDialog {
         notetitle_field = new TextField("Note Title");
         vaultSelector = new VaultSelector();
         create_button = new Button("Create Note",this::createnote_action);
-        openproeditor_button = new Button("Go PRO",this::gotopro_action);
-        openproeditor_button.addThemeVariants(ButtonVariant.LUMO_ERROR,ButtonVariant.LUMO_PRIMARY);
+        buffer1 = new MultiFileMemoryBuffer();
+        upload_component = new Upload(buffer1);
+        upload_component.setDropAllowed(true);
         prepare_components();
         prepare_dialog();
     }
@@ -79,6 +87,30 @@ public class CreateNoteDialog {
             note = new Note(null);
             NoteitApplication.current_note_new = 0;
         }
+
+        upload_component.addSucceededListener(event -> {
+            String fileName = event.getFileName();
+            InputStream inputStream = buffer1.getInputStream(fileName);
+            try{
+                InputStreamReader isr = new InputStreamReader(inputStream);
+                BufferedReader bf = new BufferedReader(isr);
+                int lines = 0;
+                while(bf.ready()){
+                    value = value + bf.readLine() + "\n";
+                    lines++;
+                }
+                if ( lines > 0 ){
+                    Notification.show("Loaded "+lines+" lines!");
+                    notecontent_field.setValue(value);
+                }
+                else{
+                    Notification.show("File is empty!");
+                }
+            }catch(Exception ex){
+                NoteitApplication.log.add("IMPORT-NOTE-FAILED","Failed to import note ("+ex.toString()+")");
+                Notification.show("Failed to import ("+ex.toString()+")");
+            }
+        });
     }
 
     /**
@@ -86,7 +118,7 @@ public class CreateNoteDialog {
      */
     void prepare_dialog(){
         main_layout.add(new H3("Note Editor"));
-        main_layout.add(openproeditor_button);
+        main_layout.add(upload_component);
         main_layout.add(new HorizontalLayout(notetitle_field,vaultSelector.combobox));
         main_layout.add(notecontent_field);
         main_layout.add(create_button);
@@ -97,8 +129,6 @@ public class CreateNoteDialog {
         main_layout.getStyle().set("text-align", "center");
 
         main_dialog.add(main_layout);
-
-        openproeditor_button.setEnabled(false);
     }
 
     /**
@@ -165,30 +195,6 @@ public class CreateNoteDialog {
                 }
                 break;
             }
-        }
-    }
-
-    /**
-     * Function for calling action for gotopro_button
-     * @param ex
-     */
-    private void gotopro_action(ClickEvent ex){
-        noteit_vault_id = -1;
-        try{
-            noteit_vault_id = vaultSelector.combobox.getValue().noteit_vault_id;
-        }catch(Exception e){Notification.show(e.toString());}
-        if ( noteit_vault_id > 0 ){
-            note.noteit_vault_id = noteit_vault_id;
-            note.noteit_object_rawtext = notecontent_field.getValue();
-            note.noteit_object_time = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
-            note.noteit_object_title =  notetitle_field.getValue();
-            NoteitApplication.current_note = note;
-            // open pro editor
-            openproeditor_button.getUI().ifPresent(ui ->
-                    ui.navigate("proeditor"));
-        }
-        else{
-            Notification.show("Vault not set!");
         }
     }
 }

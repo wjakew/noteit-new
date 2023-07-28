@@ -4,5 +4,5 @@ by Jakub Wawak
 #database_user%admin
 #database_password%password
 #database_ip%localhost
-#database_port%4000
+#database_port%3306
 #debugflag%1
