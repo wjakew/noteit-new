@@ -17,6 +17,7 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -41,6 +42,8 @@ public class CreateNoteDialog {
     TextField notetitle_field;
     TextArea notecontent_field;
     Button create_button;
+
+    Button gopro_button;
     MultiFileMemoryBuffer buffer1;
     Upload upload_component;
 
@@ -60,9 +63,13 @@ public class CreateNoteDialog {
         notetitle_field = new TextField("Note Title");
         vaultSelector = new VaultSelector();
         create_button = new Button("Create Note",this::createnote_action);
+        gopro_button = new Button("",VaadinIcon.COMPILE.create(),this::goprobutton_action);
         buffer1 = new MultiFileMemoryBuffer();
         upload_component = new Upload(buffer1);
         upload_component.setDropAllowed(true);
+
+        create_button.addThemeVariants(ButtonVariant.LUMO_SUCCESS,ButtonVariant.LUMO_PRIMARY);
+
         prepare_components();
         prepare_dialog();
     }
@@ -121,7 +128,21 @@ public class CreateNoteDialog {
         main_layout.add(upload_component);
         main_layout.add(new HorizontalLayout(notetitle_field,vaultSelector.combobox));
         main_layout.add(notecontent_field);
-        main_layout.add(create_button);
+
+        FlexLayout left_layout = new FlexLayout();
+        left_layout.setSizeFull();
+        left_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        left_layout.setAlignItems(FlexComponent.Alignment.START);
+
+        FlexLayout right_layout = new FlexLayout();
+        right_layout.setSizeFull();
+        right_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        right_layout.setAlignItems(FlexComponent.Alignment.END);
+
+        left_layout.add(create_button);
+        right_layout.add(gopro_button);
+
+        main_layout.add(new HorizontalLayout(left_layout,right_layout));
 
         main_layout.setSizeFull();
         main_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -137,6 +158,29 @@ public class CreateNoteDialog {
      */
     boolean validate_fields(){
         return vaultSelector.combobox.getValue()!=null && !notecontent_field.getValue().equals("") && !notetitle_field.getValue().equals("");
+    }
+
+    /**
+     * Function for changing to pro editor
+     * @param e
+     */
+    private void goprobutton_action(ClickEvent e){
+        int noteit_vault_id = -1;
+        try{
+            noteit_vault_id = vaultSelector.combobox.getValue().noteit_vault_id;
+        }catch(Exception ex){}
+        if (noteit_vault_id > 0){
+            NoteitApplication.current_note =new Note(null);
+            NoteitApplication.current_note.noteit_vault_id = noteit_vault_id;
+            NoteitApplication.current_note.noteit_object_rawtext = notecontent_field.getValue();
+            NoteitApplication.current_note.noteit_object_time = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+            NoteitApplication.current_note.noteit_object_title =  notetitle_field.getValue();
+            gopro_button.getUI().ifPresent(ui ->
+                    ui.navigate("proeditor"));
+        }
+        else{
+            Notification.show("Vault is not selected!");
+        }
     }
 
     /**
