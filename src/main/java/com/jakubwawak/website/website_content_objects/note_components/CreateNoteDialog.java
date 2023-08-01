@@ -67,9 +67,7 @@ public class CreateNoteDialog {
         buffer1 = new MultiFileMemoryBuffer();
         upload_component = new Upload(buffer1);
         upload_component.setDropAllowed(true);
-
         create_button.addThemeVariants(ButtonVariant.LUMO_SUCCESS,ButtonVariant.LUMO_PRIMARY);
-
         prepare_components();
         prepare_dialog();
     }

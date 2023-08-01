@@ -45,7 +45,7 @@ public class MainLayout extends AppLayout {
      */
 
     Button home_button, logout_button, adminpanel_button, todolist_button, vaultlist_button;
-    Button proeditor_button;
+    Button proeditor_button, wall_button;
 
     MultiFileMemoryBuffer buffer1;
     Upload upload_component;
@@ -64,6 +64,7 @@ public class MainLayout extends AppLayout {
         todolist_button = new Button("Your ToDo List",VaadinIcon.CHECK.create(),this::todolistbutton_action);
         vaultlist_button = new Button("Your Vaults",VaadinIcon.BOOK.create(),this::vaultistbutton_action);
         proeditor_button = new Button("Pro Note Editor",VaadinIcon.PENCIL.create(),this::openproeditorbutton_action);
+        wall_button = new Button("NoteIT Wall",VaadinIcon.WORKPLACE.create(),this::wallbutton_action);
         buffer1 = new MultiFileMemoryBuffer();
         upload_component = new Upload(buffer1);
         upload_component.setDropAllowed(true);
@@ -121,6 +122,10 @@ public class MainLayout extends AppLayout {
     private void homebutton_action(ClickEvent e){
         home_button.getUI().ifPresent(ui ->
                 ui.navigate("home"));
+    }
+
+    private void wallbutton_action(ClickEvent e){
+        wall_button.getUI().ifPresent(ui -> ui.navigate("walls"));
     }
 
     /**
@@ -231,9 +236,9 @@ public class MainLayout extends AppLayout {
     private void createMenu(){
         if ( NoteitApplication.logged != null && NoteitApplication.logged.getNoteit_user_id() > 0){
             adminpanel_button.setSizeFull();logout_button.setSizeFull();todolist_button.setSizeFull();vaultlist_button.setSizeFull();
-            proeditor_button.setSizeFull(); upload_component.setSizeFull();
+            proeditor_button.setSizeFull(); upload_component.setSizeFull(); wall_button.setSizeFull();
             adminpanel_button.setHeight("50px");logout_button.setHeight("50px");todolist_button.setHeight("50px");vaultlist_button.setHeight("50px");
-            proeditor_button.setHeight("50px");upload_component.setHeight("100px");
+            proeditor_button.setHeight("50px");wall_button.setHeight("50px");upload_component.setHeight("100px");
             VerticalLayout vl = new VerticalLayout();
 
             vl.setSizeFull();
@@ -251,6 +256,7 @@ public class MainLayout extends AppLayout {
             vl.add(vaultlist_button);
             vl.add(todolist_button);
             vl.add(proeditor_button);
+            vl.add(wall_button);
             vl.add(new H6("Drop Zone"));
             vl.add(upload_component);
 

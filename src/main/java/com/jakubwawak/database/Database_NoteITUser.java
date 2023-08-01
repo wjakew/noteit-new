@@ -73,6 +73,9 @@ public class Database_NoteITUser {
                 // here user already created
                 int noteit_user_id = checkuserid(email);
                 if ( noteit_user_id  > 0 ){
+                    // create personal wall for user
+                    Database_Wall dw = new Database_Wall(NoteitApplication.database);
+                    dw.create_user_wall(noteit_user_id);
                     // send email, create configuration
                     createuserconfiguration(noteit_user_id); // create configuration
                     // sending email
@@ -109,7 +112,6 @@ public class Database_NoteITUser {
         }
         else{
             // email in database
-
             String query = "SELECT * FROM NOTEIT_USER WHERE noteit_user_email = ? and noteit_user_password = ?;";
             try{
                 Password_Validator pv = new Password_Validator(password);
@@ -149,6 +151,27 @@ public class Database_NoteITUser {
                 NoteitApplication.log.add("LOGIN-FAILED","Failed to login user "+email+" ("+e.toString()+")");
                 return -4;
             }
+        }
+    }
+
+    /**
+     * Function for getting user data and object from database
+     * @param noteit_user_id
+     * @return NoteIT_User
+     */
+    public NoteIT_User get_user(int noteit_user_id){
+        String query = "SELECT * FROM NOTEIT_USER WHERE noteit_user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_user_id);
+            ResultSet rs = ppst.executeQuery();
+            if (rs.next()){
+                return new NoteIT_User(rs);
+            }
+            return null;
+        }catch(SQLException ex){
+            NoteitApplication.log.add("USER-GET-FAILED","Failed to get user ("+ex.toString()+")");
+            return null;
         }
     }
 

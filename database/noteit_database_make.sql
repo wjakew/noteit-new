@@ -15,7 +15,7 @@ CREATE TABLE NOTEIT_APPLOG -- table for storing app log messages
     noteit_log_time TIMESTAMP,
     noteit_2fa_code VARCHAR(100),
     noteit_log_code VARCHAR(200),
-    noteit_log_desc VARCHAR(400)
+    noteit_log_desc TEXT
 );
 CREATE TABLE NOTEIT_HEALTH -- table for storing application data
 (
@@ -32,7 +32,7 @@ CREATE TABLE NOTEIT_HEALTH -- table for storing application data
 INSERT INTO NOTEIT_HEALTH (noteit_database_version,noteit_mailserver_host,
 noteit_mailserver_port,noteit_mailserver_username,noteit_mailserver_password,noteit_adminpanel_password,noteit_mailsend_flag
 ,noteit_2fa_flag,noteit_newuser_flag)
-VALUES ('100','smtp.gmail.com','587','main.tes.instruments@gmail.com','kufiynyvzjdtwjar','',0,0,0);
+VALUES ('101','smtp.gmail.com','587','main.tes.instruments@gmail.com','bqcyaizlzgwyahxn','',0,0,1);
 CREATE TABLE NOTEIT_USER -- table for storing application users
 (
     noteit_user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,8 +47,6 @@ CREATE TABLE NOTEIT_USER -- table for storing application users
     noteit_user_hash_code VARCHAR(250),
     noteit_user_dayofcreation TIMESTAMP
 )AUTO_INCREMENT = 1000000;
-INSERT INTO NOTEIT_USER (noteit_user_name,noteit_user_surname,noteit_user_email,noteit_user_role,noteit_user_password,noteit_user_active,noteit_user_email_confirmed,noteit_user_hash_code,noteit_user_dayofcreation)
-VALUES ('Admin','Admin','kubawawak@gmail.com','SUPERUSER','d7b7f6c245586ebf19960b22713ea7d7',1,1,'asdfhbsaasj',null);
 CREATE TABLE NOTEIT_ACCCONFIRM -- table for storing confirmation codes for accounts
 (
     noteit_accconfirm_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,7 +71,7 @@ CREATE TABLE NOTEIT_WALL -- table for storing wall data
     noteit_wall_id INT AUTO_INCREMENT PRIMARY KEY,
     noteit_user_id INT,
     noteit_wall_name VARCHAR(100),
-    noteit_Valut_members VARCHAR(200),
+    noteit_wall_members VARCHAR(200), -- data stored with user ids and commas
 
     CONSTRAINT fk_wall1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
 );
@@ -108,6 +106,7 @@ CREATE TABLE NOTEIT_USER_CONFIGURATION -- table for storing user configuration
 
     CONSTRAINT fk_config1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
 );
+
 CREATE TABLE NOTEIT_USER_LOG -- table for storing user log
 (
     noteit_user_log_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -146,6 +145,19 @@ CREATE TABLE NOTEIT_MAIL_ARCHIVE -- table for storing mail archive
     noteit_mail_time TIMESTAMP,
     noteit_mail_content TEXT
 );
+CREATE TABLE NOTEIT_DIARY -- table for storing diary elements
+(
+    noteit_diary_id INT AUTO_INCREMENT PRIMARY KEY,
+    noteit_user_id INT,
+    noteit_diary_timestamp TIMESTAMP,
+    noteit_diary_content TEXT,
+    noteit_diary_moodtracker INT,
+    noteit_diary_sleeptime INT,
+    noteit_diary_stresstracker INT,
+    noteit_diary_quoteoftheday TEXT,
+
+    CONSTRAINT fk_diary1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
+);
 
 CREATE TABLE NOTEIT_WELCOMENOTES -- table for storing welcome notes
 (
@@ -160,7 +172,10 @@ CREATE TABLE BLOB_ARCHIVE -- table for storing removed objects blob
     noteit_blob_category VARCHAR(100),
     noteit_blob LONGBLOB
 );
-
-
+-- creating qoutes for login screen
 INSERT INTO NOTEIT_WELCOMENOTES (noteit_welcomenotes_text) VALUES('You didn’t expect these notes to turn into my therapy session, did you?');
 INSERT INTO NOTEIT_WELCOMENOTES (noteit_welcomenotes_text) VALUES('Gift yourself with a journal for your own notes.');
+
+-- account creation for tests
+INSERT INTO NOTEIT_USER (noteit_user_name,noteit_user_surname,noteit_user_email,noteit_user_role,noteit_user_password,noteit_user_active,noteit_user_email_confirmed,noteit_user_hash_code,noteit_user_dayofcreation)
+VALUES ('Admin','Admin','kubawawak@gmail.com','SUPERUSER','d7b7f6c245586ebf19960b22713ea7d7',1,1,'asdfhbsaasj',null);

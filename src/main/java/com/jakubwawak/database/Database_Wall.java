@@ -6,11 +6,17 @@
 package com.jakubwawak.database;
 
 import com.jakubwawak.noteit.NoteitApplication;
+import com.jakubwawak.support_objects.Note;
+import com.jakubwawak.support_objects.Wall;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+/**
+ * Object for maintaining wall data on database
+ */
 public class Database_Wall {
 
     /**
@@ -31,7 +37,7 @@ public class Database_Wall {
      *     noteit_wall_id INT AUTO_INCREMENT PRIMARY KEY,
      *     noteit_user_id INT,
      *     noteit_wall_name VARCHAR(100),
-     *     noteit_Valut_members VARCHAR(200),
+     *     noteit_wall_members VARCHAR(200),
      *
      *     CONSTRAINT fk_wall1 FOREIGN KEY (noteit_user_id) REFERENCES NOTEIT_USER (noteit_user_id)
      * );
@@ -74,7 +80,7 @@ public class Database_Wall {
      * @return 1 - wall created, -1 - database error, 2 - wall already created
      */
     public int create_user_wall(int noteit_user_id){
-        String query = "INSERT INTO NOTEIT_WALL (noteit_user_id, noteit_wall_name,noteit_Vault_members) VALUES (?,?,?)";
+        String query = "INSERT INTO NOTEIT_WALL (noteit_user_id, noteit_wall_name,noteit_wall_members) VALUES (?,?,?)";
         if ( check_user_wall(NoteitApplication.logged.getNoteit_user_id()) == 0 ){
             try{
                 PreparedStatement ppst = database.con.prepareStatement(query);
@@ -90,5 +96,27 @@ public class Database_Wall {
             }
         }
         return 2;
+    }
+
+    /**
+     * Function for loading user data
+     * @param noteit_user_id
+     * @return
+     */
+    public ArrayList<Wall> get_user_wall(int noteit_user_id){
+        ArrayList<Wall> data = new ArrayList<>();
+        String query = "SELECT * FROM NOTEIT_WALL WHERE noteit_user_id = ? " +
+                "OR noteit_wall_members LIKE '%,"+noteit_user_id+"%' OR noteit_wall_members LIKE '%"+noteit_user_id+",%';";
+        try{
+            PreparedStatement ppst = NoteitApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,noteit_user_id);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add(new Wall(rs));
+            }
+        }catch(SQLException ex){
+            NoteitApplication.log.add("LIST-WALL-FAILED","Failed to list walls ("+ex.toString()+")");
+        }
+        return data;
     }
 }
