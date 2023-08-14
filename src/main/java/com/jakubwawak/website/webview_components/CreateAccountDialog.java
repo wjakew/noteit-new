@@ -71,6 +71,7 @@ public class CreateAccountDialog {
         main_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         main_layout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         main_layout.getStyle().set("text-align", "center");
+        main_layout.getStyle().set("--lumo-font-family","Monospace");
         create_button.setSizeFull();
         main_layout.add(create_button);
         main_dialog.add(main_layout);

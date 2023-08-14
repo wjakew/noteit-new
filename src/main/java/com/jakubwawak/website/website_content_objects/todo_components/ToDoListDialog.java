@@ -55,6 +55,7 @@ public class ToDoListDialog {
         main_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         main_layout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         main_layout.getStyle().set("text-align", "center");
+        main_layout.getStyle().set("--lumo-font-family","Monospace");
         main_dialog.add(main_layout);
     }
 

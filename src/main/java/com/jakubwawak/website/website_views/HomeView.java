@@ -39,6 +39,7 @@ public class HomeView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
         getStyle().set("background-color","#000000");
+        getStyle().set("--lumo-font-family","Monospace");
     }
 
     /**

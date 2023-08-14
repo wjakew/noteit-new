@@ -51,6 +51,7 @@ public class ManageServerView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+        getStyle().set("--lumo-font-family","Monospace");
     }
 
     /**
