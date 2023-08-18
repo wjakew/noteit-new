@@ -18,7 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NoteitApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "noteit-180823PR";
+	public static String build = "noteit-180823PR1";
 
 	public static int debug = 1;
 	public static int test = 0;
@@ -36,6 +36,8 @@ public class NoteitApplication {
 	public static Note current_note;
 	public static int current_note_new;
 
+	public static Configuration config;
+
 	/**
 	 * Main application function
 	 * @param args
@@ -49,7 +51,7 @@ public class NoteitApplication {
 		main_layout = null;
 		noteit_vault_id = 0;
 		// looking for configuration file
-		Configuration config = new Configuration();
+		config = new Configuration();
 		log = new NoteIT_Logger();
 
 		// checking if file exists
@@ -75,8 +77,13 @@ public class NoteitApplication {
 					test.run();
 				}
 				else{
+					//setting application database reconnection
+					Runnable connection_updater = new DatabaseConnectionUpdater(21600000);
+					Thread connection_updater_thread = new Thread(connection_updater);
+					connection_updater_thread.start();
 					//run application server
 					SpringApplication.run(NoteitApplication.class, args);
+					//setting application menu
 					NoteitMenu menu = new NoteitMenu();
 					menu.run();
 				}

@@ -1,6 +1,6 @@
 # 
 
-<img src="file:///C:/src/noteit-new/readme_resources/icon-dark.png" title="" alt="icon-dark.png" data-align="center">
+<img src="file:///./readme_resources/icon-dark.png" title="" alt="icon-dark.png" data-align="center">
 
 # NoteIT Web Application.
 
@@ -27,19 +27,19 @@ Development still in progress. Full doc will arrive with GM release.
 
 **Database Architecture:**
 
-![database_schema.png](C:\src\noteit-new\readme_resources\database_schema.png)
+![database_schema.png](.\readme_resources\database_schema.png)
 
 **Application Architecture**
 
-![noteit_architecture.png](C:\src\noteit-new\readme_resources\noteit_architecture.png)
+![noteit_architecture.png](.\readme_resources\noteit_architecture.png)
 
 **Application Screenshots**
 
-![noteitapplication_screenshot1.png](C:\src\noteit-new\readme_resources\noteitapplication_screenshot1.png)
+![noteitapplication_screenshot1.png](.\readme_resources\noteitapplication_screenshot1.png)
 
-![noteitapplication_screenshot2.png](C:\src\noteit-new\readme_resources\noteitapplication_screenshot2.png)
+![noteitapplication_screenshot2.png](.\readme_resources\noteitapplication_screenshot2.png)
 
-![noteitapplication_screenshot3.png](C:\src\noteit-new\readme_resources\noteitapplication_screenshot3.png)
+![noteitapplication_screenshot3.png](.\readme_resources\noteitapplication_screenshot3.png)
 
 **Deployment Instructions**
 
