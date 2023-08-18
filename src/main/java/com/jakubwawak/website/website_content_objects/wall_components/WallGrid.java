@@ -42,6 +42,7 @@ public class WallGrid {
         grid.setItems(content);
         // setting size
         grid.setWidth("250px");
+        grid.setHeight("100%");
     }
 
     /**

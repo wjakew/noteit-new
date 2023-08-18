@@ -262,6 +262,8 @@ public class MainLayout extends AppLayout {
 
             vl.add(new Text(NoteitApplication.build+"/"+NoteitApplication.version));
             addToDrawer(vl);
+
+            wall_button.setEnabled(false);
         }
     }
 

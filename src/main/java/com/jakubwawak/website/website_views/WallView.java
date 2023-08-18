@@ -21,7 +21,6 @@ public class WallView extends VerticalLayout {
 
     WallGrid wallGrid;
 
-
     /**
      * Constructor
      */
